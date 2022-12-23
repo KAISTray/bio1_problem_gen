@@ -18,10 +18,12 @@ Family class : Set(Person) //Hh, Tt, ABO, etc..
 
 """
 class Problem:
+    def testFunc():
+        print("hi")
 
 
 class ProblemT1(Problem):
-    def __init__(answerTree, problems, hints):
+    def __init__(self, answerTree, problems, hints):
         self.answer = answerTree # as Family
         self.problem = problems # 질문 형식은 추후 고려해보겠습니다..
         self.hint = hints
@@ -60,10 +62,9 @@ class Family:
         mother.children.update(children)
         
     def find(self, ident):
-        for person in list(members):
+        for person in list(self.members):
             if (person.id = ident):
                 return person
-                break
         return None
 
 
