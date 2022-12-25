@@ -63,16 +63,16 @@ class Family:
         
     def find(self, ident):
         for person in list(self.members):
-            if (person.id = ident):
+            if (person.id == ident):
                 return person
         return None
 
 
 def genProblem(type):
     if (type == 1):
-        #do type 1
+        print("temp")
     else:
-        #else
+        print("tempp")
 
 
 def familyTreeProblem():
@@ -136,9 +136,13 @@ def familyTreeProblem():
     familyT.add(grandchild)
 
     #각 멤버들 결혼, 자식관계 지정하기
-        
-
     
+    Family.marriage(leftFather, leftMother)
+    Family.marriage(rightFather, rightMother)
+    Family.babies(leftFather, leftMother, leftChild)
+    Family.babies(rightFather, rightMother, rightChild)
+    
+    #Family.marriage()
                          
     
 
