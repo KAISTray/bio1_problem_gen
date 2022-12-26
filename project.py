@@ -1,26 +1,25 @@
 import random
+import turtle
 
-##const
+# const
 male = True
 female = False
 
+def ReLU(x):
+    if (x >= 0):
+        return x
+    else:
+        return 0
+
 # description / notes
-"""
-Person class : Id(Int), Sex(Boolean), Genes(List), Mother(Person)
-Father(Person), Spouse(Person), Children(Set(Person))
-Family class : Set(Person) //Hh, Tt, ABO, etc..
 
+# Person class : Id(Int), Sex(Boolean), Genes(List), Mother(Person)
+# Father(Person), Spouse(Person), Children(Set(Person))
+# Family class : Set(Person) //Hh, Tt, ABO, etc..
 
-문제 제시유형
-
-1. 가계도
-
-
-"""
 class Problem:
     def testFunc():
         print("hi")
-
 
 class ProblemT1(Problem):
     def __init__(self, answerTree, problems, hints):
@@ -67,6 +66,140 @@ class Family:
                 return person
         return None
 
+################################ Helper Function For Turtle Drawing Module ################################
+
+def drawline(turtlebot, centerCoord, xs, ys, dir, len):
+    turtlebot.penup()
+    turtlebot.goto(xs + centerCoord[0], ys + centerCoord[1])
+    turtlebot.setheading(dir)
+    turtlebot.pendown()
+    turtlebot.forward(len)
+    turtlebot.penup()
+
+def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt = 0):
+    # option 0 : just shape
+    # option 1 : right-up hatched
+    # option 2 : left-up hatched
+    # option 3 : X-cross hatched
+    # option 4 : vertical hatched
+    # option 5 : horizontal hatched
+    # option 6 : filled_black
+    # option 7 : filled_gray
+    # shapeType = {circle, square, triangle}
+    turtlebot.penup()
+    turtlebot.goto(center[0], center[1])
+    turtlebot.setheading(0)
+    turtlebot.pendown()
+    if (opt == 6):
+        turtlebot.begin_fill()
+        turtlebot.color("black")
+    elif (opt == 7):
+        turtlebot.begin_fill()
+        turtlebot.color("gray")
+
+    if (shapeType == "circle"):
+        turtlebot.circle(radius)
+    elif (shapeType == "square"):
+        turtlebot.goto(center[0] - (radius / 2), center[1] - (radius / 2))
+        for _ in range(4):
+            turtlebot.forward(radius)
+            turtlebot.left(90)
+    
+    turtlebot.penup()
+    if (opt == 6 or opt == 7):
+        turtlebot.end_fill()
+        turtlebot.color("black")
+    
+    if (opt == 1 and shapeType == "circle"):
+        for i in range(15):
+            h = (i - 7) * radius / 5
+            d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
+            xs = -0.5 * (h + d)
+            ys = xs + h
+            
+            drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
+
+    elif (opt == 2 and shapeType == "circle"):
+        for i in range(15):
+            h = (i - 7) * radius / 5
+            d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
+            xs = -0.5 * (- h + d)
+            ys = -xs + h
+
+            drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
+
+    elif (opt == 3 and shapeType == "circle"):
+        for i in range(15):
+            h = (i - 7) * radius / 5
+            d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
+            xs = -0.5 * (h + d)
+            ys = xs + h
+            
+            drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
+
+            h = (i - 7) * radius / 5
+            d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
+            xs = -0.5 * (- h + d)
+            ys = -xs + h
+
+            drawline(turtlebot, xs, ys, -45, d * (2 ** 0.5))
+
+    elif (opt == 4 and shapeType == "circle"):
+        for i in range(15):
+            h = (i - 7) * radius / 8
+            d = ((radius**2) - (h**2))**0.5
+            xs = -d
+            ys = h
+
+            drawline(turtlebot, center, xs, ys, 0, 2 * d)
+
+    elif (opt == 5 and shapeType == "circle"):
+        for i in range(15):
+            h = (i - 7) * radius / 8
+            d = ((radius**2) - (h**2))**0.5
+            xs = h
+            ys = -d
+            
+            drawline(turtlebot, center, xs, ys, 90, 2 * d)
+
+    elif (opt == 1 and shapeType == "square"):
+        for i in range(15):
+            h = (i - 7) * radius / 8
+            d = abs(radius - h)
+            xs = ReLU(-h) - (radius / 2)
+            ys = xs + h
+            drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
+
+    elif (opt == 2 and shapeType == "square"):
+        for i in range(15):
+            h = (i - 7) * radius / 8
+            d = abs(radius - h)
+            xs = ReLU(h) - (radius / 2)
+            
+    elif (opt == 3 and shapeType == "square"):
+
+    elif (opt == 4 and shapeType == "square"):
+
+    elif (opt == 5 and shapeType == "square"):
+    
+
+
+
+    return
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################################################################
 
 def genProblem(type):
     if (type == 1):
@@ -75,7 +208,7 @@ def genProblem(type):
         print("tempp")
 
 
-def familyTreeProblem():
+def familyTreeGen():
     familyT = Family()
     # 랜덤 인수 :
     # 친가 2세대 자식이 몇명인가? leftN
@@ -90,7 +223,7 @@ def familyTreeProblem():
     leftN = random.randrange(1, 4)
     rightN = random.randrange(1, 4)
     leftP = random.randrange(0, leftN)
-    rightP = random.randrage(0, rightN)
+    rightP = random.randrange(0, rightN)
 
     leftFather = Person(1, male)
     leftMother = Person(2, female)
@@ -141,8 +274,42 @@ def familyTreeProblem():
     Family.marriage(rightFather, rightMother)
     Family.babies(leftFather, leftMother, leftChild)
     Family.babies(rightFather, rightMother, rightChild)
+    leftSecond = familyT.find(5 + leftP)
+    rightSecond = familyT.find(4 + leftN + rightP)
+    Family.marriage(leftSecond, rightSecond)
+    Family.babies(leftSecond, rightSecond, grandchild)
+
+    aux = [leftN, rightN, leftP, rightP]
+    return (familyT, aux)
+
+
+def drawTree(familyT, aux):
+    size_pen = 1
+    pen = turtle.Turtle("circle") # circle-shaped turtle generated
+    pen.pensize(size_pen)
+    pen.pencolor("black")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
-    #Family.marriage()
+
+
+
                          
     
 
