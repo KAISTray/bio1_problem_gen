@@ -68,6 +68,32 @@ class Family:
 
 ################################ Helper Function For Turtle Drawing Module ################################
 
+class DrawPartition:
+    def __init__(self, headleft, tailright):
+        self.head = headleft[1]
+        self.left = headleft[0]
+        self.tail = tailright[1]
+        self.right = tailright[0]
+        self.width = self.right - self.left
+        self.height = self.head - self.tail
+    
+    def AABBCollision(partA, partB):
+        a = partA
+        b = partB
+        (ar, al, at, ab) = (a.right, a.left, a.head, a.tail)
+        (br, bl, bt, bb) = (b.right, b.left, b.head, b.tail)
+        
+        if (ar > bl and br > al and at > bb and bt > ab):
+            return True
+        else:
+            return False
+
+    def centerAlign(partition, alignOption, returnOption):
+        # alignOption : vertical, horizontal, center
+        # returnOption : (_, _) : ({left, right, center/middle}, {top/head, bottom/tail, center/middle})
+        (pr, pl, pt, pb) = (partition.right, partition.left, partition.head, partition.tail)
+        
+
 def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.penup()
     turtlebot.goto(xs + centerCoord[0], ys + centerCoord[1])
@@ -81,8 +107,8 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     # option 1 : right-up hatched
     # option 2 : left-up hatched
     # option 3 : X-cross hatched
-    # option 4 : vertical hatched
-    # option 5 : horizontal hatched
+    # option 4 : horizontal hatched
+    # option 5 : vertical hatched
     # option 6 : filled_black
     # option 7 : filled_gray
     # shapeType = {circle, square, triangle}
@@ -175,29 +201,43 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             h = (i - 7) * radius / 8
             d = abs(radius - h)
             xs = ReLU(h) - (radius / 2)
-            
+            ys = -xs + h
+            drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
+
     elif (opt == 3 and shapeType == "square"):
+        for i in range(15):
+            h = (i - 7) * radius / 8
+            d = abs(radius - h)
+            xs = ReLU(-h) - (radius / 2)
+            ys = xs + h
+            drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
+            xs = ReLU(h) - (radius / 2)
+            ys = -xs + h
+            drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 4 and shapeType == "square"):
+        for i in range(15):
+            h = (i - 7) * radius / 16
+            d = radius
+            xs = -radius / 2
+            ys = h
+            drawline(turtlebot, center, xs, ys, 0, d)
 
     elif (opt == 5 and shapeType == "square"):
-    
-
-
+        for i in range(15):
+            h = (i - 7) * radius / 16
+            d = radius
+            xs = h
+            ys = -radius / 2
+            drawline(turtlebot, center, xs, ys, 90, d)
 
     return
 
-
-
-
-
-
-
-
-
-
-
-
+def normalizeRadius(shapeType, originRadius):
+    if (shapeType == "square"):
+        return originRadius
+    else:
+        return originRadius / 2
 
 ###########################################################################################################
 
@@ -283,11 +323,14 @@ def familyTreeGen():
     return (familyT, aux)
 
 
-def drawTree(familyT, aux):
+def drawTree(familyT, aux, headcenterCoord = (0, 950), treeSize = (920, 700)):
     size_pen = 1
     pen = turtle.Turtle("circle") # circle-shaped turtle generated
     pen.pensize(size_pen)
     pen.pencolor("black")
+
+    
+
 
 
 
