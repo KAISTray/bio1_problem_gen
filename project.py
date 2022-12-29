@@ -88,11 +88,33 @@ class DrawPartition:
         else:
             return False
 
-    def centerAlign(partition, alignOption, returnOption):
+    def centerAlign(partition, curx, cury, width, height, alignOption = "center", returnOption = ("center", "center")):
         # alignOption : vertical, horizontal, center
         # returnOption : (_, _) : ({left, right, center/middle}, {top/head, bottom/tail, center/middle})
         (pr, pl, pt, pb) = (partition.right, partition.left, partition.head, partition.tail)
+
+        cx = (pr + pl) / 2
+        cy = (pt + pb) / 2
+
+        if (alignOption == "vertical"):
+            cy = cury
+        elif (alignOption == "horizontal"):
+            cx = curx
         
+        (rx, ry) = (cx, cy)
+
+        if (returnOption[0] == "left"):
+            rx = cx - width / 2
+        elif (returnOption[0] == "right"):
+            rx = cx + width / 2
+        
+        if (returnOption[1] == "top" or returnOption[1] == "head"):
+            ry = cy + height / 2
+        elif (returnOption[1] == "bottom" or returnOption[1] == "tail"):
+            ry = cy - height / 2
+        
+        return (rx, ry)
+
 
 def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.penup()
@@ -329,13 +351,42 @@ def drawTree(familyT, aux, headcenterCoord = (0, 950), treeSize = (920, 700)):
     pen.pensize(size_pen)
     pen.pencolor("black")
 
+
     
 
+"""
+-------  400
+-------  375
 
 
 
 
 
+-------  25
+-------  0
+
+
+
+------- -250
+------- -275
+
+
+------- -375
+------- -400
+
+"""
+
+
+size_page = (600, 800)
+size_desc = (550, 350)
+size_tree = (550, 250)
+size_ques = (550, 100)
+
+
+
+turtle.setup(size_page[0], size_page[1])
+
+input("press any key to exit..")
 
 
 
