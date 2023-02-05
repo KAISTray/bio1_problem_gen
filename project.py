@@ -359,32 +359,36 @@ def drawTree(familyT, aux, headcenterCoord = (0, 950), treeSize = (920, 700)):
 -------  375
 
 
-
+desc : 350
 
 
 -------  25
 -------  0
 
-
+tree : 250
 
 ------- -250
 ------- -275
 
-
+ques : 100
 ------- -375
 ------- -400
 
 """
 
-
-size_page = (600, 800)
-size_desc = (550, 350)
-size_tree = (550, 250)
-size_ques = (550, 100)
-
+size_x = 550
+size_w = 25
+size_desc = (size_x, 350)
+size_tree = (size_x, 250)
+size_ques = (size_x, 100)
+size_page = (size_x + 2 * size_w, size_desc[1] + size_tree[1] + size_ques[1] + 4 * size_w)
 
 
 turtle.setup(size_page[0], size_page[1])
+
+part_page = DrawPartition((- size_page[0] / 2, size_page[1] / 2), (size_page[0] / 2, -size_page[1] / 2))
+part_desc = DrawPartition((-size_desc[0] / 2, size_page[1] - size_w), (size_desc[0] / 2, size_page[1] - size_w - size_desc[1]))
+part_desc = DrawPartition((-size_desc[0] / 2, size_page[1] - size_desc[1] - 2 * size_w), (size_desc[0] / 2, ))
 
 input("press any key to exit..")
 
