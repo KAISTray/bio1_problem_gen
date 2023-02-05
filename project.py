@@ -151,6 +151,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
         turtlebot.penup()
         turtlebot.goto(center[0], center[1])
     elif (shapeType == "square"):
+        radius = radius * 2
         turtlebot.penup()
         turtlebot.goto(center[0] - (radius / 2), center[1] - (radius / 2))
         turtlebot.pendown()
@@ -306,7 +307,7 @@ def familyTreeGen():
     
     for iditer in range(5, 5+leftN):
         itersex = male
-        if (iditer - 5 == leftP):
+        if (iditer == 4 + leftN):
             itersex = male
         else:
             if (random.random() > 0.5):
@@ -315,9 +316,9 @@ def familyTreeGen():
                 itersex = female
         leftChild.append(Person(iditer, itersex))
 
-    for iditer in range(4+leftN, 4+leftN+rightN):
+    for iditer in range(4+leftN + 1, 4+leftN+rightN + 1):
         itersex = female
-        if (iditer - 5 - leftN == rightP):
+        if (iditer == 5 + leftN):
             itersex = female
         else:
             if (random.random() > 0.5):
@@ -348,7 +349,7 @@ def familyTreeGen():
     leftSecond = familyT.find(4 + leftN)
     rightSecond = familyT.find(4 + leftN + 1)
     familyT.marriage(leftSecond, rightSecond)
-    familyT.babies(leftSecond, rightSecond, grandchild)
+    familyT.baby(leftSecond, rightSecond, grandchild)
 
     aux = [leftN, rightN, leftP, rightP]
     return (familyT, aux)
@@ -360,8 +361,8 @@ def familyTreeGen():
 
 
 def drawTree(bot, familyGenerated, center, blocksize):
-    leftN = len(familyGenerated[1][0])
-    rightN = len(familyGenerated[1][1])
+    leftN = familyGenerated[1][0]
+    rightN = familyGenerated[1][1]
 
     
     drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # left  father
@@ -408,8 +409,8 @@ def drawTree(bot, familyGenerated, center, blocksize):
                 gShape = "square"
             else:
                 gShape = "circle"
-            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (leftN - 1))), 0), blocksize / 2, 0)
-            drawline(bot, center, (1.5 + i * (3 / (leftN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
+            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (rightN - 1))), 0), blocksize / 2, 0)
+            drawline(bot, center, (1.5 + i * (3 / (rightN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
     
     
 
