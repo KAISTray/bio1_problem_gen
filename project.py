@@ -344,8 +344,13 @@ def familyTreeGen():
     aux = [leftN, rightN, leftP, rightP]
     return (familyT, aux)
 
+# familyT : Class Family | Tree of family
+# headcenterCoord : lefthigh coordinate
+# treeSize : size of Tree
 
-def drawTree(familyT, aux, headcenterCoord = (0, 950), treeSize = (920, 700)):
+
+
+def drawTree(familyT, headcenterCoord = (0, 950), treeSize = (920, 700)):
     size_pen = 1
     pen = turtle.Turtle("circle") # circle-shaped turtle generated
     pen.pensize(size_pen)
@@ -354,41 +359,35 @@ def drawTree(familyT, aux, headcenterCoord = (0, 950), treeSize = (920, 700)):
 
     
 
-"""
--------  400
--------  375
 
 
-desc : 350
 
 
--------  25
--------  0
+size_x = 550                # Total x width
+size_w = 25                 # 여백
+size_desc = (size_x, 400)   # size_desc
+size_tree = (size_x, 300)   # size_tree
+size_ques = (size_x, 100)   # size_ques
 
-tree : 250
 
-------- -250
-------- -275
-
-ques : 100
-------- -375
-------- -400
-
-"""
-
-size_x = 550
-size_w = 25
-size_desc = (size_x, 350)
-size_tree = (size_x, 250)
-size_ques = (size_x, 100)
+# automatic calculated
 size_page = (size_x + 2 * size_w, size_desc[1] + size_tree[1] + size_ques[1] + 4 * size_w)
 
-
+# turtle setup
 turtle.setup(size_page[0], size_page[1])
 
-part_page = DrawPartition((- size_page[0] / 2, size_page[1] / 2), (size_page[0] / 2, -size_page[1] / 2))
-part_desc = DrawPartition((-size_desc[0] / 2, size_page[1] - size_w), (size_desc[0] / 2, size_page[1] - size_w - size_desc[1]))
-part_desc = DrawPartition((-size_desc[0] / 2, size_page[1] - size_desc[1] - 2 * size_w), (size_desc[0] / 2, ))
+# automatic calculated
+x_radius = size_page[0] / 2
+y_radius = size_page[1] / 2
+radius = (x_radius, y_radius)
+# partition
+descPart = DrawPartition((size_w - x_radius, size_tree[1] + size_ques[1] + size_desc[1] + 3 * size_w - y_radius),(size_w + size_x - x_radius, size_tree[1] + size_ques[1] + 3 * size_w - y_radius))
+treePart = DrawPartition((size_w - x_radius, size_ques[1] + size_tree[1] + 2 * size_w - y_radius), (size_w + size_x - x_radius, size_ques[1] + 2 * size_w - y_radius))
+quesPart = DrawPartition((size_w - x_radius, size_w + size_ques[1] - y_radius), (size_w + size_x - x_radius, size_w - y_radius))
+
+
+
+
 
 input("press any key to exit..")
 
