@@ -44,7 +44,7 @@ class Family:
     def add(self, human):
         self.members.add(human)
 
-    def marriage(person1, person2):
+    def marriage(self, person1, person2):
         if (person1.sex != person2.sex):
             person1.spouse = person2
             person2.spouse = person1
@@ -52,11 +52,11 @@ class Family:
             person1.children = childs
             person2.children = childs
 
-    def baby(father, mother, child):
+    def baby(self, father, mother, child):
         father.children.add(child)
         mother.children.add(child)
 
-    def babies(father, mother, children): #list input!
+    def babies(self, father, mother, children): #list input!
         father.children.update(children)
         mother.children.update(children)
         
@@ -115,7 +115,6 @@ class DrawPartition:
         
         return (rx, ry)
 
-
 def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.penup()
     turtlebot.goto(xs + centerCoord[0], ys + centerCoord[1])
@@ -143,17 +142,27 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
         turtlebot.color("black")
     elif (opt == 7):
         turtlebot.begin_fill()
-        turtlebot.color("gray")
 
     if (shapeType == "circle"):
+        turtlebot.penup()
+        turtlebot.goto(center[0], center[1] - radius)
+        turtlebot.pendown()
         turtlebot.circle(radius)
+        turtlebot.penup()
+        turtlebot.goto(center[0], center[1])
     elif (shapeType == "square"):
+        turtlebot.penup()
         turtlebot.goto(center[0] - (radius / 2), center[1] - (radius / 2))
+        turtlebot.pendown()
         for _ in range(4):
             turtlebot.forward(radius)
             turtlebot.left(90)
     
     turtlebot.penup()
+
+    if (opt == 7):
+        turtlebot.color("gray")
+
     if (opt == 6 or opt == 7):
         turtlebot.end_fill()
         turtlebot.color("black")
@@ -190,7 +199,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             xs = -0.5 * (- h + d)
             ys = -xs + h
 
-            drawline(turtlebot, xs, ys, -45, d * (2 ** 0.5))
+            drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 4 and shapeType == "circle"):
         for i in range(15):
@@ -256,10 +265,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     return
 
 def normalizeRadius(shapeType, originRadius):
-    if (shapeType == "square"):
-        return originRadius
-    else:
-        return originRadius / 2
+    return originRadius
 
 ###########################################################################################################
 
@@ -284,9 +290,8 @@ def familyTreeGen():
 
     leftN = random.randrange(1, 4)
     rightN = random.randrange(1, 4)
-    leftP = random.randrange(0, leftN)
-    rightP = random.randrange(0, rightN)
-
+    leftP = 4 + leftN
+    rightP = leftP + 1
     leftFather = Person(1, male)
     leftMother = Person(2, female)
     rightFather = Person(3, male)
@@ -327,19 +332,23 @@ def familyTreeGen():
     for person in rightChild:
         familyT.add(person)
 
-    grandchild = Person(5 + leftN + rightN)
+    if (random.random() > 0.5):
+        itersex = male
+    else:
+        itersex = female
+    grandchild = Person(5 + leftN + rightN, itersex)
     familyT.add(grandchild)
 
     #각 멤버들 결혼, 자식관계 지정하기
     
-    Family.marriage(leftFather, leftMother)
-    Family.marriage(rightFather, rightMother)
-    Family.babies(leftFather, leftMother, leftChild)
-    Family.babies(rightFather, rightMother, rightChild)
-    leftSecond = familyT.find(5 + leftP)
-    rightSecond = familyT.find(4 + leftN + rightP)
-    Family.marriage(leftSecond, rightSecond)
-    Family.babies(leftSecond, rightSecond, grandchild)
+    familyT.marriage(leftFather, leftMother)
+    familyT.marriage(rightFather, rightMother)
+    familyT.babies(leftFather, leftMother, leftChild)
+    familyT.babies(rightFather, rightMother, rightChild)
+    leftSecond = familyT.find(4 + leftN)
+    rightSecond = familyT.find(4 + leftN + 1)
+    familyT.marriage(leftSecond, rightSecond)
+    familyT.babies(leftSecond, rightSecond, grandchild)
 
     aux = [leftN, rightN, leftP, rightP]
     return (familyT, aux)
@@ -350,11 +359,72 @@ def familyTreeGen():
 
 
 
-def drawTree(familyT, headcenterCoord = (0, 950), treeSize = (920, 700)):
-    size_pen = 1
-    pen = turtle.Turtle("circle") # circle-shaped turtle generated
-    pen.pensize(size_pen)
-    pen.pencolor("black")
+def drawTree(bot, familyGenerated, center, blocksize):
+    leftN = len(familyGenerated[1][0])
+    rightN = len(familyGenerated[1][1])
+
+    
+    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # left  father
+    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # left  mother
+    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # right father
+    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # right mother
+    drawline(bot, center, -4 * blocksize, 2 * blocksize, 0, 2 * blocksize)
+    drawline(bot, center,  2 * blocksize, 2 * blocksize, 0, 2 * blocksize)
+    drawline(bot, center, -3 * blocksize, 2 * blocksize, 270, blocksize)
+    drawline(bot, center,  3 * blocksize, 2 * blocksize, 270, blocksize)
+
+    gShape = ""
+    if (leftN == 1):
+        drawline(bot, center, -3 * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
+        if (familyGenerated[0].find(familyGenerated[1][2]).sex == male):
+            gShape = "square"
+        else:
+            gShape = "circle"
+        drawShape(bot, gShape, (center[0] + blocksize * (-3), center[1]), blocksize / 2, 0) # left children
+        drawline(bot, center, -2.5 * blocksize, 0, 0, 1.5 * blocksize)
+    else:
+        drawline(bot, center, -4.5 * blocksize, blocksize, 0, 3 * blocksize)
+        for i in range(leftN):
+            if (familyGenerated[0].find(4 + 1 + i).sex == male):
+                gShape = "square"
+            else:
+                gShape = "circle"
+            drawShape(bot, gShape, (center[0] + blocksize * (-4.5 + i * (3 / (leftN - 1))), 0), blocksize / 2, 0)
+            drawline(bot, center, (-4.5 + i * (3 / (leftN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
+
+
+    if (rightN == 1):
+        drawline(bot, center,  3 * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
+        if (familyGenerated[0].find(familyGenerated[1][2]).sex == male):
+            gShape = "square"
+        else:
+            gShape = "circle"
+        drawShape(bot, gShape, (center[0] + 3 * blocksize, center[1]), blocksize / 2, 0) # right children
+        drawline(bot, center, 1 * blocksize, 0, 0, 1.5 * blocksize)
+    else:
+        drawline(bot, center, 4.5 * blocksize, blocksize, 180, 3 * blocksize)
+        for i in range(rightN):
+            if (familyGenerated[0].find(4 + leftN + 1 + i).sex == male):
+                gShape = "square"
+            else:
+                gShape = "circle"
+            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (leftN - 1))), 0), blocksize / 2, 0)
+            drawline(bot, center, (1.5 + i * (3 / (leftN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
+    
+    
+
+
+
+    drawline(bot, center, -1 * blocksize, 0, 0, 2 * blocksize)
+    drawline(bot, center, 0, 0, 270, blocksize * 1.5)
+    if (familyGenerated[0].find(4 + 1 + leftN + rightN).sex == male):
+        gShape = "square"
+    else:
+        gShape = "circle"
+    drawShape(bot, gShape, (center[0], -2 * blocksize + center[1]), blocksize / 2, 0)
+
+    
+    
 
 
     
@@ -385,6 +455,11 @@ descPart = DrawPartition((size_w - x_radius, size_tree[1] + size_ques[1] + size_
 treePart = DrawPartition((size_w - x_radius, size_ques[1] + size_tree[1] + 2 * size_w - y_radius), (size_w + size_x - x_radius, size_ques[1] + 2 * size_w - y_radius))
 quesPart = DrawPartition((size_w - x_radius, size_w + size_ques[1] - y_radius), (size_w + size_x - x_radius, size_w - y_radius))
 
+bot = turtle.Turtle()
+
+
+testF = familyTreeGen()
+drawTree(bot, testF, (0, 0), 30)
 
 
 
