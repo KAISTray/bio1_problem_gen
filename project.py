@@ -123,14 +123,17 @@ def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.forward(len)
     turtlebot.penup()
 
-def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt):
-    ys = ys - ffont[1] * 0.75
+
+def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, color = 0, alignoption = "center"):
+    ys = ys - ffont[1] * 2.75
     # what value shit the fuck
     turtlebot.penup()
+    # color : dead code..
     turtlebot.goto(xs + centerCoord[0], ys + centerCoord[1])
     turtlebot.pendown()
-    turtlebot.write(txt, move=False, align = "center", font = ffont)
+    turtlebot.write(txt, move=False, align = alignoption, font = ffont)
     turtlebot.penup()
+    turtlebot.color("black")
 
 def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt = 0):
     # option 0 : just shape
@@ -232,7 +235,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     elif (opt == 1 and shapeType == "square"):
         for i in range(15):
             h = (i - 7) * radius / 8
-            d = abs(radius - h)
+            d = abs(radius - abs(h))
             xs = ReLU(-h) - (radius / 2)
             ys = xs + h
             drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
@@ -240,7 +243,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     elif (opt == 2 and shapeType == "square"):
         for i in range(15):
             h = (i - 7) * radius / 8
-            d = abs(radius - h)
+            d = abs(radius - abs(h))
             xs = ReLU(h) - (radius / 2)
             ys = -xs + h
             drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
@@ -248,7 +251,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     elif (opt == 3 and shapeType == "square"):
         for i in range(15):
             h = (i - 7) * radius / 8
-            d = abs(radius - h)
+            d = abs(radius - abs(h))
             xs = ReLU(-h) - (radius / 2)
             ys = xs + h
             drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
@@ -394,14 +397,14 @@ def drawTree(bot, familyGenerated, center, blocksize):
     font = ("Arial", 12, "normal")
 
     
-    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # left  father
-    writeTxt(bot, center, -4.5 * blocksize, 2 * blocksize, font, txtdict[1])
-    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # left  mother
-    writeTxt(bot, center, -1.5 * blocksize, 2 * blocksize, font, txtdict[2])
-    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # right father
-    writeTxt(bot, center, 1.5 * blocksize, 2 * blocksize, font, txtdict[3])
-    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 0) # right mother
-    writeTxt(bot, center, 4.5 * blocksize, 2 * blocksize, font, txtdict[4])
+    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 1) # left  father
+    writeTxt(bot, center, -4.5 * blocksize, 2 * blocksize, font, txtdict[1], 1)
+    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 2) # left  mother
+    writeTxt(bot, center, -1.5 * blocksize, 2 * blocksize, font, txtdict[2], 2)
+    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 3) # right father
+    writeTxt(bot, center, 1.5 * blocksize, 2 * blocksize, font, txtdict[3], 3)
+    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 4) # right mother
+    writeTxt(bot, center, 4.5 * blocksize, 2 * blocksize, font, txtdict[4], 4)
     drawline(bot, center, -4 * blocksize, 2 * blocksize, 0, 2 * blocksize)
     drawline(bot, center,  2 * blocksize, 2 * blocksize, 0, 2 * blocksize)
     drawline(bot, center, -3 * blocksize, 2 * blocksize, 270, blocksize)
@@ -414,8 +417,10 @@ def drawTree(bot, familyGenerated, center, blocksize):
             gShape = "square"
         else:
             gShape = "circle"
-        drawShape(bot, gShape, (center[0] + blocksize * (-3), center[1]), blocksize / 2, 0) # left children
-        writeTxt(bot, center, -3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN])
+        
+        fillcode = 4 + leftN
+        drawShape(bot, gShape, (center[0] + blocksize * (-3), center[1]), blocksize / 2, fillcode) # left children
+        writeTxt(bot, center, -3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN], fillcode)
         drawline(bot, center, -2.5 * blocksize, 0, 0, 1.5 * blocksize)
     else:
         drawline(bot, center, -4.5 * blocksize, blocksize, 0, 3 * blocksize)
@@ -424,8 +429,9 @@ def drawTree(bot, familyGenerated, center, blocksize):
                 gShape = "square"
             else:
                 gShape = "circle"
-            drawShape(bot, gShape, (center[0] + blocksize * (-4.5 + i * (3 / (leftN - 1))), 0), blocksize / 2, 0)
-            writeTxt(bot, center, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtdict[5 + i])
+            fillcode = 5 + i
+            drawShape(bot, gShape, (center[0] + blocksize * (-4.5 + i * (3 / (leftN - 1))), center[1]), blocksize / 2, fillcode)
+            writeTxt(bot, center, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtdict[5 + i], fillcode)
             drawline(bot, center, (-4.5 + i * (3 / (leftN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
 
 
@@ -435,7 +441,9 @@ def drawTree(bot, familyGenerated, center, blocksize):
             gShape = "square"
         else:
             gShape = "circle"
-        drawShape(bot, gShape, (center[0] + 3 * blocksize, center[1]), blocksize / 2, 0) # right children
+        fillcode = 5 + leftN
+        drawShape(bot, gShape, (center[0] + 3 * blocksize, center[1]), blocksize / 2, fillcode) # right children
+        writeTxt(bot, center, 3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN + 1], fillcode)
         drawline(bot, center, 1 * blocksize, 0, 0, 1.5 * blocksize)
     else:
         drawline(bot, center, 4.5 * blocksize, blocksize, 180, 3 * blocksize)
@@ -444,8 +452,9 @@ def drawTree(bot, familyGenerated, center, blocksize):
                 gShape = "square"
             else:
                 gShape = "circle"
-            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (rightN - 1))), 0), blocksize / 2, 0)
-            writeTxt(bot, center, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtdict[5 + leftN + i])
+            fillcode = 5 + i + leftN
+            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (rightN - 1))), center[1]), blocksize / 2, fillcode)
+            writeTxt(bot, center, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtdict[5 + leftN + i], fillcode)
             drawline(bot, center, (1.5 + i * (3 / (rightN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
     
     
@@ -493,11 +502,10 @@ treePart = DrawPartition((size_w - x_radius, size_ques[1] + size_tree[1] + 2 * s
 quesPart = DrawPartition((size_w - x_radius, size_w + size_ques[1] - y_radius), (size_w + size_x - x_radius, size_w - y_radius))
 
 bot = turtle.Turtle()
-
-
+writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 20, "normal"), "Hello, This is test text", 0, "left")
 
 testF = familyTreeGen()
-drawTree(bot, testF, (0, 0), 30)
+drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
 
 
 
