@@ -289,7 +289,7 @@ def genProblem(type):
         print("tempp")
 
 
-def familyTreeGen():
+def familyTreeGen(args):
     familyT = Family()
     # 랜덤 인수 :
     # 친가 2세대 자식이 몇명인가? leftN
@@ -299,8 +299,24 @@ def familyTreeGen():
     # 대립유전형질은 3종류 (Aa, Bb, Dd)
     # 상염색체 개수 (numberA), 성염색체 개수 (numberS)
     # ABO 나옴? isABOProblem
-    # 
+    # args = {numNormalGene, numSexGene, numABO, problemType, hintargs}
+    # problemType
+    """
+    args : 
+    numNormalGene = 0, 1, 2, 3
+    numSexGene = 0, 1
+    numABO : 0, 1
+    problemType : {
+        0 : 단순 추론 (염색체 정보를 모두 공개한 후 빈칸만 뚫어서 추측하기)
+        1 : Missing link를 주기
+        2 : DNA 상대량
+    }
+    
+    """
 
+
+
+    hintlist = []
     leftN = random.randrange(1, 4)
     rightN = random.randrange(1, 4)
     leftP = 4 + leftN
