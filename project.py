@@ -1,9 +1,17 @@
 import random
 import turtle
+from enum import Enum
 
 # const
 male = True
 female = False
+
+class GeneT(Enum):
+    ABO = 0
+    P = 1
+    Q = 2
+    R = 3
+    S = 4
 
 def ReLU(x):
     if (x >= 0):
@@ -381,6 +389,45 @@ def familyTreeGen(args):
 
     # 문제 Generate 해서 Text 넣기
 
+    # Gene : ABO, P, Q, R, S = (0, 1, 2, 3, 4)
+
+    pType = random.randint(1, 3)
+    selectedG = list()
+    if (pType == 1):
+        selectedG.append(GeneT.P)
+        selectedG.append(GeneT.Q)
+        selectedG.append(GeneT.R)
+
+    # 2 : AA, 1 : Aa, 0 : aa
+    # Gene Phase 1 : 조부모들의 유전형을 임의로 결정한다.
+    for typ in selectedG:
+        for i in range(1, 5):
+            targetP = familyT.find(i)
+            r = random.random()
+            x = 0
+            if r < 0.3:
+                x = 1
+            elif r < 0.8:
+                x = 2
+            else:
+                x = 3
+            targetP.genes[typ] = x
+    
+    # Gene Phase 2 : 자식들한테 유전시킨다.
+    for i in range(0, 2):
+        fatherP = familyT.find(1 + 2 * i)
+        motherP = familyT.find(2 + 2 * i)
+        for j in range(5 + leftN * i, 5 + leftN + rightN * i):
+            targetP = familyT.find(j)
+            targetP.genes = geneHeredity(fatherP, motherP, selectedG)
+    
+    fatherP = familyT.find(4 + leftN)
+    motherP = familyT.find(4 + leftN + 1)
+    targetP = familyT.find(4 + leftN + rightN + 1)
+    targetP.genes = geneHeredity(fatherP, motherP, selectedG)
+    
+
+
 
 
 
@@ -408,6 +455,38 @@ def familyTreeGen(args):
 # familyT : Class Family | Tree of family
 # headcenterCoord : lefthigh coordinate
 # treeSize : size of Tree
+
+def geneHeredity(father, mother, selectedG): # return by dict
+    for typ in selectedG:
+        r = random.random()
+        F = father.genes[typ]
+        M = mother.genes[typ]
+        ret = dict()
+        if (F + M == 2): # AA - AA
+            ret[typ] = 1 # AA only
+        elif (F + M == 3): ## AA - Aa
+            if (r < 0.5):
+                ret[typ] = 1
+            else:
+                ret[typ] = 2
+        elif (F + M == 4 and F * M == 3): ## AA - aa
+            ret[typ] = 2
+        elif (F + M == 4 and F * M == 4): ## Aa - Aa
+            if (r < 0.25):
+                ret[typ] = 1
+            elif (r < 0.5):
+                ret[typ] = 3
+            else:
+                ret[typ] = 2
+        elif (F + M == 5) : ## Aa - aa
+            if (r < 0.5):
+                ret[typ] = 2
+            else:
+                ret[typ] = 3
+        else: # aa - aa
+            ret[typ] = 3
+    
+    return ret
 
 
 
