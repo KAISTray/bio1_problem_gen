@@ -131,11 +131,12 @@ def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.forward(len)
     turtlebot.penup()
 
-def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, color = 0, alignoption = "center"):
+def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, scolor = "black", alignoption = "center"):
     ys = ys - ffont[1] * 2.75
     # what value shit the fuck
     turtlebot.penup()
     # color : dead code..
+    turtlebot.color(scolor)
     turtlebot.goto(xs + centerCoord[0], ys + centerCoord[1])
     turtlebot.pendown()
     turtlebot.write(txt, move=False, align = alignoption, font = ffont)
@@ -181,14 +182,14 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
     turtlebot.penup()
 
     if (opt == 7):
-        turtlebot.color("gray")
+        turtlebot.color("silver")
 
     if (opt == 6 or opt == 7):
         turtlebot.end_fill()
         turtlebot.color("black")
     
     if (opt == 1 and shapeType == "circle"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 5
             d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
             xs = -0.5 * (h + d)
@@ -197,7 +198,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
 
     elif (opt == 2 and shapeType == "circle"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 5
             d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
             xs = -0.5 * (- h + d)
@@ -206,7 +207,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 3 and shapeType == "circle"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 5
             d = (2 * (radius ** 2) - (h ** 2)) ** 0.5
             xs = -0.5 * (h + d)
@@ -222,7 +223,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 4 and shapeType == "circle"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 8
             d = ((radius**2) - (h**2))**0.5
             xs = -d
@@ -231,7 +232,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 0, 2 * d)
 
     elif (opt == 5 and shapeType == "circle"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 8
             d = ((radius**2) - (h**2))**0.5
             xs = h
@@ -240,7 +241,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 90, 2 * d)
 
     elif (opt == 1 and shapeType == "square"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 8
             d = abs(radius - abs(h))
             xs = ReLU(-h) - (radius / 2)
@@ -248,7 +249,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 45, d * (2 ** 0.5))
 
     elif (opt == 2 and shapeType == "square"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 8
             d = abs(radius - abs(h))
             xs = ReLU(h) - (radius / 2)
@@ -256,7 +257,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 3 and shapeType == "square"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 8
             d = abs(radius - abs(h))
             xs = ReLU(-h) - (radius / 2)
@@ -267,7 +268,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, -45, d * (2 ** 0.5))
 
     elif (opt == 4 and shapeType == "square"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 16
             d = radius
             xs = -radius / 2
@@ -275,7 +276,7 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 0, d)
 
     elif (opt == 5 and shapeType == "square"):
-        for i in range(15):
+        for i in range(0, 15, 2):
             h = (i - 7) * radius / 16
             d = radius
             xs = h
@@ -389,29 +390,66 @@ def familyTreeGen(args):
 
     # 문제 Generate 해서 Text 넣기
 
-    # Gene : ABO, P, Q, R, S = (0, 1, 2, 3, 4)
+    
 
     pType = random.randint(1, 3)
     selectedG = list()
     if (pType == 1):
+        selectedG.append(GeneT.ABO)
         selectedG.append(GeneT.P)
-        selectedG.append(GeneT.Q)
-        selectedG.append(GeneT.R)
+        selectedG.append(GeneT.S)
 
-    # 2 : AA, 1 : Aa, 0 : aa
+
+    # Gene : ABO, P, Q, R, S = (0, 1, 2, 3, 4)
+    # 상염색체 | {AA 1 Aa 2 aa 3}
+    
+    # ABO | {AA 2 AO 1 BB 6 BO 3 OO 0 AB 4}
+    # Consider A as 1, B as 3
+
+    # 
+    # 성염색체 | {X'X' 1 2 X'X 3 4 XX 5 6 X'Y 1 2 3 XY 4 5 6}
+
     # Gene Phase 1 : 조부모들의 유전형을 임의로 결정한다.
     for typ in selectedG:
         for i in range(1, 5):
             targetP = familyT.find(i)
             r = random.random()
             x = 0
-            if r < 0.3:
-                x = 1
-            elif r < 0.8:
-                x = 2
-            else:
-                x = 3
-            targetP.genes[typ] = x
+            if (typ == GeneT.ABO): # 복대립 ABO
+                if r < 1/6:
+                    x = 1
+                elif r < 2/6:
+                    x = 2
+                elif r < 3/6:
+                    x = 3
+                elif r < 4/6:
+                    x = 4
+                elif r < 5/6:
+                    x = 5
+                else:
+                    x = 6
+            elif (typ == GeneT.S): # 성염색체
+                if r < 1/6:
+                    x = 1
+                elif r < 2/6:
+                    x = 2
+                elif r < 3/6:
+                    x = 3
+                elif r < 4/6:
+                    x = 4
+                elif r < 5/6:
+                    x = 5
+                else:
+                    x = 6
+            else: # 상염색체
+                if r < 0.3:
+                    x = 1
+                elif r < 0.8:
+                    x = 2
+                else:
+                    x = 3
+            
+            targetP.genes[typ] = x  
     
     # Gene Phase 2 : 자식들한테 유전시킨다.
     for i in range(0, 2):
@@ -419,20 +457,15 @@ def familyTreeGen(args):
         motherP = familyT.find(2 + 2 * i)
         for j in range(5 + leftN * i, 5 + leftN + rightN * i):
             targetP = familyT.find(j)
-            targetP.genes = geneHeredity(fatherP, motherP, selectedG)
-    
+            targetP.genes = geneHeredity(fatherP, motherP, selectedG, targetP.sex)
     fatherP = familyT.find(4 + leftN)
     motherP = familyT.find(4 + leftN + 1)
     targetP = familyT.find(4 + leftN + rightN + 1)
     targetP.genes = geneHeredity(fatherP, motherP, selectedG)
-    
-
-
-
-
 
     boxtxt = dict() #dictionary : int id -> str
     intxt = dict() #dictionary : int id -> str
+    fillT = dict()
     # boxtxt[key], intxt[key] = "Text" 로 mapping 추가 가능
     # boxtxt : Number
     # intxt : 내용
@@ -444,71 +477,139 @@ def familyTreeGen(args):
 
     for i in range(1, 4 + leftN + rightN + 2):
         boxtxt[i] = str(i)
-        intxt[i] = "ABO"
-
-    # end of problem gen
 
         
 
-    return (familyT, aux, (boxtxt, intxt))
+        intxt[i] = "ABO"
+
+        fillT[i] = "Hi"
+
+    # end of problem gen
+
+    return (familyT, aux, (boxtxt, intxt, fillT))
 
 # familyT : Class Family | Tree of family
 # headcenterCoord : lefthigh coordinate
 # treeSize : size of Tree
 
-def geneHeredity(father, mother, selectedG): # return by dict
+def ABOAnalysis(aboFactor):
+    if (aboFactor % 2 == 0):
+        if (aboFactor == 4):
+            return (3, 1)
+        else:
+            return (aboFactor/2, aboFactor/2)
+    else:
+        if (aboFactor == 1):
+            return (1, 0)
+        elif (aboFactor == 3):
+            return (3, 0)
+
+def geneHeredity(father, mother, selectedG, sex): # return by dict
+    ret = dict()
     for typ in selectedG:
         r = random.random()
         F = father.genes[typ]
         M = mother.genes[typ]
-        ret = dict()
-        if (F + M == 2): # AA - AA
-            ret[typ] = 1 # AA only
-        elif (F + M == 3): ## AA - Aa
-            if (r < 0.5):
-                ret[typ] = 1
-            else:
-                ret[typ] = 2
-        elif (F + M == 4 and F * M == 3): ## AA - aa
-            ret[typ] = 2
-        elif (F + M == 4 and F * M == 4): ## Aa - Aa
+        x = 0
+        if (typ == GeneT.ABO): # memo : A = 1, B = 3, O = 0
+            mABO = ABOAnalysis(M)
+            fABO = ABOAnalysis(F)
+            mF = -1
+            fF = -1
             if (r < 0.25):
-                ret[typ] = 1
+                mF = mABO[0]
+                fF = fABO[0]
             elif (r < 0.5):
-                ret[typ] = 3
+                mF = mABO[0]
+                fF = fABO[1]
+            elif (r < 0.75):
+                mF = mABO[1]
+                fF = fABO[0]
             else:
-                ret[typ] = 2
-        elif (F + M == 5) : ## Aa - aa
-            if (r < 0.5):
-                ret[typ] = 2
-            else:
-                ret[typ] = 3
-        else: # aa - aa
-            ret[typ] = 3
-    
+                mF = mABO[1]
+                fF = fABO[1]
+            x = mF + fF
+            
+        elif (typ == GeneT.S):
+            if (sex == male): # male : XY, X는 부모 염색체를 물려받음
+                if (M <= 2) : # X'X'
+                    x = 1
+                elif (M <= 4): # X'X
+                    if (r < 0.5):
+                        x = 1
+                    else:
+                        x = 4
+                else: # XX
+                    x = 4
+            else: #female : XX. 하나의 X는 어머니, 다른 하나의 X는 아버지
+                if (M <= 2): # 어머니가 X'X'라면
+                    x = 2 #확정 X'X'
+                elif (M <= 4): # 어머니가 X'X라면
+                    if (r < 0.5):
+                        x = 2
+                    else:
+                        x = 4
+                else: #어머니가 XX라면
+                    x = 4
+                if (F >= 4):
+                    x = x + 2
+        else :
+            if (F + M == 2): # AA - AA
+                x = 1 # AA only
+            elif (F + M == 3): ## AA - Aa
+                if (r < 0.5):
+                    x = 1
+                else:
+                    x = 2
+            elif (F + M == 4 and F * M == 3): ## AA - aa
+                x = 2
+            elif (F + M == 4 and F * M == 4): ## Aa - Aa
+                if (r < 0.25):
+                    x = 1
+                elif (r < 0.5):
+                    x = 3
+                else:
+                    x = 2
+            elif (F + M == 5) : ## Aa - aa
+                if (r < 0.5):
+                    x = 2
+                else:
+                    x = 3
+            else: # aa - aa
+                x = 3
+        ret[typ] = x
     return ret
 
-
+def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
+    txtcolor = ""
+    if (fillcode == 6):
+        txtcolor = "white"
+    else:
+        txtcolor = "black"
+    drawShape(bot, shp, (center[0] - xs * bs, center[1] + ys * bs), bs / 2, fillcode)
+    writeTxt(bot, center, xs * bs, ys * bs, font, txtN, color=txtcolor)
+    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, color = txtcolor)
 
 def drawTree(bot, familyGenerated, center, blocksize):
     leftN = familyGenerated[1][0]
     rightN = familyGenerated[1][1]
     txtno = familyGenerated[2][0]
     txtdict = familyGenerated[2][1]
+    fillc = familyGenerated[2][2]
     font = ("Arial", 12, "normal")
     mCenter = (center[0], (center[1] + font[1] * 2))
 
     
-    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 1) # left  father
+    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[1]) # left  father
     writeTxt(bot, center, -4.5 * blocksize, 2 * blocksize, font, txtno[1])
     writeTxt(bot, mCenter, -4.5 * blocksize, 2 * blocksize, font, txtdict[1])
-    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 2) # left  mother
+    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[2]) # left  mother
     writeTxt(bot, center, -1.5 * blocksize, 2 * blocksize, font, txtno[2])
     writeTxt(bot, mCenter, -1.5 * blocksize, 2 * blocksize, font, txtdict[2])
-    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 3) # right father
+    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[3]) # right father
     writeTxt(bot, center, 1.5 * blocksize, 2 * blocksize, font, txtno[3])
     writeTxt(bot, mCenter, 1.5 * blocksize, 2 * blocksize, font, txtdict[3])
-    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, 4) # right mother
+    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[4]) # right mother
     writeTxt(bot, center, 4.5 * blocksize, 2 * blocksize, font, txtno[4])
     writeTxt(bot, mCenter, 4.5 * blocksize, 2 * blocksize, font, txtdict[4])
     drawline(bot, center, -4 * blocksize, 2 * blocksize, 0, 2 * blocksize)
@@ -524,7 +625,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
         else:
             gShape = "circle"
         
-        fillcode = 4 + leftN
+        fillcode = fillc[4 + leftN]
         drawShape(bot, gShape, (center[0] + blocksize * (-3), center[1]), blocksize / 2, fillcode) # left children
         writeTxt(bot, center, -3 * blocksize, 0 * blocksize, font, txtno[4 + leftN])
         writeTxt(bot, mCenter, -3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN])
@@ -536,7 +637,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
                 gShape = "square"
             else:
                 gShape = "circle"
-            fillcode = 5 + i
+            fillcode = fillc[5 + i]
             drawShape(bot, gShape, (center[0] + blocksize * (-4.5 + i * (3 / (leftN - 1))), center[1]), blocksize / 2, fillcode)
             writeTxt(bot, center, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtno[5 + i])
             writeTxt(bot, mCenter, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtdict[5 + i])
@@ -549,7 +650,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
             gShape = "square"
         else:
             gShape = "circle"
-        fillcode = 5 + leftN
+        fillcode = fillc[5 + leftN]
         drawShape(bot, gShape, (center[0] + 3 * blocksize, center[1]), blocksize / 2, fillcode) # right children
         writeTxt(bot, center, 3 * blocksize, 0 * blocksize, font, txtno[4 + leftN + 1])
         writeTxt(bot, mCenter, 3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN + 1])
@@ -561,7 +662,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
                 gShape = "square"
             else:
                 gShape = "circle"
-            fillcode = 5 + i + leftN
+            fillcode = fillc[5 + i + leftN]
             drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (rightN - 1))), center[1]), blocksize / 2, fillcode)
             writeTxt(bot, center, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtno[5 + leftN + i])
             writeTxt(bot, mCenter, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtdict[5 + leftN + i])
@@ -577,7 +678,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
         gShape = "square"
     else:
         gShape = "circle"
-    drawShape(bot, gShape, (center[0], -2 * blocksize + center[1]), blocksize / 2, 0)
+    drawShape(bot, gShape, (center[0], -2 * blocksize + center[1]), blocksize / 2, fillc[5 + leftN + rightN])
     writeTxt(bot, center, blocksize * 0, -2 * blocksize, font, txtno[5 + leftN + rightN])
     writeTxt(bot, mCenter, blocksize * 0, -2 * blocksize, font, txtdict[5 + leftN + rightN])
     
