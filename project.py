@@ -476,13 +476,30 @@ def familyTreeGen(args):
     # intxt에 넣을거 넣으면됨
 
     for i in range(1, 4 + leftN + rightN + 2):
+        targetP = familyT.find(i)
         boxtxt[i] = str(i)
 
+        if (pType == 1): #ABO, P, S
+            # In-Box : ABO, Fill : P, S 복합
+            # AA, Aa : 발현, aa : 미발현
+            tmp = targetP.genes[GeneT.ABO]
+            if (tmp == 0):
+                intxt[i] = "O"
+            elif (tmp == 1 or tmp == 2):
+                intxt[i] = "A"
+            elif (tmp == 3 or tmp == 6):
+                intxt[i] = "B"
+            else:
+                intxt[i] = "AB"
+            
+            # 여자 : 2 이하일 때 발현 / 남자 : 3 이하일 때 발현
+            fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1 
+            
+            
         
+        intxt[i] = 1 # 박스안에 채워질 애들
+        fillT[i] = 1 # 채색수
 
-        intxt[i] = "ABO"
-
-        fillT[i] = "Hi"
 
     # end of problem gen
 
@@ -503,6 +520,9 @@ def ABOAnalysis(aboFactor):
             return (1, 0)
         elif (aboFactor == 3):
             return (3, 0)
+
+# 아래 3개 함수는 안 건드리는게 정신건강에 이롭습니다
+# 잘 짜놨겠거니 하고 건들지마세요 제발
 
 def geneHeredity(father, mother, selectedG, sex): # return by dict
     ret = dict()
@@ -598,20 +618,10 @@ def drawTree(bot, familyGenerated, center, blocksize):
     fillc = familyGenerated[2][2]
     font = ("Arial", 12, "normal")
     mCenter = (center[0], (center[1] + font[1] * 2))
-
-    
-    drawShape(bot, "square", (center[0] - 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[1]) # left  father
-    writeTxt(bot, center, -4.5 * blocksize, 2 * blocksize, font, txtno[1])
-    writeTxt(bot, mCenter, -4.5 * blocksize, 2 * blocksize, font, txtdict[1])
-    drawShape(bot, "circle", (center[0] - 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[2]) # left  mother
-    writeTxt(bot, center, -1.5 * blocksize, 2 * blocksize, font, txtno[2])
-    writeTxt(bot, mCenter, -1.5 * blocksize, 2 * blocksize, font, txtdict[2])
-    drawShape(bot, "square", (center[0] + 1.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[3]) # right father
-    writeTxt(bot, center, 1.5 * blocksize, 2 * blocksize, font, txtno[3])
-    writeTxt(bot, mCenter, 1.5 * blocksize, 2 * blocksize, font, txtdict[3])
-    drawShape(bot, "circle", (center[0] + 4.5 * blocksize, center[1] + 2 * blocksize), blocksize / 2, fillc[4]) # right mother
-    writeTxt(bot, center, 4.5 * blocksize, 2 * blocksize, font, txtno[4])
-    writeTxt(bot, mCenter, 4.5 * blocksize, 2 * blocksize, font, txtdict[4])
+    drawS(bot, "square", center, mCenter, -4.5, 2, blocksize, fillc[1], font, txtno[1], txtdict[1])
+    drawS(bot, "circle", center, mCenter, -1.5, 2, blocksize, fillc[2], font, txtno[2], txtdict[2])
+    drawS(bot, "square", center, mCenter,  1.5, 2, blocksize, fillc[3], font, txtno[3], txtdict[3])
+    drawS(bot, "circle", center, mCenter,  4.5, 2, blocksize, fillc[4], font, txtno[4], txtdict[4])
     drawline(bot, center, -4 * blocksize, 2 * blocksize, 0, 2 * blocksize)
     drawline(bot, center,  2 * blocksize, 2 * blocksize, 0, 2 * blocksize)
     drawline(bot, center, -3 * blocksize, 2 * blocksize, 270, blocksize)
@@ -626,9 +636,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
             gShape = "circle"
         
         fillcode = fillc[4 + leftN]
-        drawShape(bot, gShape, (center[0] + blocksize * (-3), center[1]), blocksize / 2, fillcode) # left children
-        writeTxt(bot, center, -3 * blocksize, 0 * blocksize, font, txtno[4 + leftN])
-        writeTxt(bot, mCenter, -3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN])
+        drawS(bot, gShape, center, mCenter, -3, 0, blocksize, fillc[4 + leftN], font, txtno[4 + leftN], txtdict[4 + leftN])
         drawline(bot, center, -2.5 * blocksize, 0, 0, 1.5 * blocksize)
     else:
         drawline(bot, center, -4.5 * blocksize, blocksize, 0, 3 * blocksize)
@@ -638,9 +646,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
             else:
                 gShape = "circle"
             fillcode = fillc[5 + i]
-            drawShape(bot, gShape, (center[0] + blocksize * (-4.5 + i * (3 / (leftN - 1))), center[1]), blocksize / 2, fillcode)
-            writeTxt(bot, center, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtno[5 + i])
-            writeTxt(bot, mCenter, blocksize * (-4.5 + i * (3 / (leftN - 1))), 0 * blocksize, font, txtdict[5 + i])
+            drawS(bot, gShape, center, mCenter, (-4.5 + i * (3 / (leftN - 1))), 0, blocksize, fillc[5 + i], font, txtno[5 + i], txtdict[5 + i])
             drawline(bot, center, (-4.5 + i * (3 / (leftN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
 
 
@@ -651,9 +657,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
         else:
             gShape = "circle"
         fillcode = fillc[5 + leftN]
-        drawShape(bot, gShape, (center[0] + 3 * blocksize, center[1]), blocksize / 2, fillcode) # right children
-        writeTxt(bot, center, 3 * blocksize, 0 * blocksize, font, txtno[4 + leftN + 1])
-        writeTxt(bot, mCenter, 3 * blocksize, 0 * blocksize, font, txtdict[4 + leftN + 1])
+        drawS(bot, gShape, center, mCenter, 3, 0, blocksize, fillc[5 + leftN], font, txtno[5 + leftN], txtdict[5 + leftN])
         drawline(bot, center, 1 * blocksize, 0, 0, 1.5 * blocksize)
     else:
         drawline(bot, center, 4.5 * blocksize, blocksize, 180, 3 * blocksize)
@@ -663,9 +667,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
             else:
                 gShape = "circle"
             fillcode = fillc[5 + i + leftN]
-            drawShape(bot, gShape, (center[0] + blocksize * (1.5 + i * (3 / (rightN - 1))), center[1]), blocksize / 2, fillcode)
-            writeTxt(bot, center, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtno[5 + leftN + i])
-            writeTxt(bot, mCenter, blocksize * (1.5 + i * (3 / (rightN - 1))), 0 * blocksize, font, txtdict[5 + leftN + i])
+            drawS(bot, gShape, center, mCenter, (1.5 + i * (3 / (rightN - 1))), 0, blocksize, fillc[5 + i + leftN], font, txtno[5 + i + leftN], txtdict[5 + i + leftN])
             drawline(bot, center, (1.5 + i * (3 / (rightN - 1))) * blocksize, 1 * blocksize, 270, 0.5 * blocksize)
     
     
@@ -678,16 +680,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
         gShape = "square"
     else:
         gShape = "circle"
-    drawShape(bot, gShape, (center[0], -2 * blocksize + center[1]), blocksize / 2, fillc[5 + leftN + rightN])
-    writeTxt(bot, center, blocksize * 0, -2 * blocksize, font, txtno[5 + leftN + rightN])
-    writeTxt(bot, mCenter, blocksize * 0, -2 * blocksize, font, txtdict[5 + leftN + rightN])
-    
-    
-
-
-    
-
-
+    drawS(bot, gShape, center, mCenter, 0, -2, blocksize, fillc[5 + leftN + rightN], font, txtno[5 + leftN + rightN], txtdict[5 + leftN + rightN])
 
 
 
