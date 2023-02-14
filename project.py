@@ -392,7 +392,7 @@ def familyTreeGen(args):
 
     
 
-    pType = random.randint(1, 3)
+    pType = 1
     selectedG = list()
     if (pType == 1):
         selectedG.append(GeneT.ABO)
@@ -461,7 +461,7 @@ def familyTreeGen(args):
     fatherP = familyT.find(4 + leftN)
     motherP = familyT.find(4 + leftN + 1)
     targetP = familyT.find(4 + leftN + rightN + 1)
-    targetP.genes = geneHeredity(fatherP, motherP, selectedG)
+    targetP.genes = geneHeredity(fatherP, motherP, selectedG, targetP.sex)
 
     boxtxt = dict() #dictionary : int id -> str
     intxt = dict() #dictionary : int id -> str
@@ -493,12 +493,7 @@ def familyTreeGen(args):
                 intxt[i] = "AB"
             
             # 여자 : 2 이하일 때 발현 / 남자 : 3 이하일 때 발현
-            fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1 
-            
-            
-        
-        intxt[i] = 1 # 박스안에 채워질 애들
-        fillT[i] = 1 # 채색수
+            fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1
 
 
     # end of problem gen
@@ -707,7 +702,7 @@ treePart = DrawPartition((size_w - x_radius, size_ques[1] + size_tree[1] + 2 * s
 quesPart = DrawPartition((size_w - x_radius, size_w + size_ques[1] - y_radius), (size_w + size_x - x_radius, size_w - y_radius))
 
 bot = turtle.Turtle()
-writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 20, "normal"), "Hello, This is test text", 0, "left")
+writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 20, "normal"), "Hello, This is test text", "black", "left")
 
 testF = familyTreeGen(list())
 drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
