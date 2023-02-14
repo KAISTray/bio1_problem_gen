@@ -417,15 +417,15 @@ def familyTreeGen(args):
             x = 0
             if (typ == GeneT.ABO): # 복대립 ABO
                 if r < 1/6:
-                    x = 1
+                    x = 0
                 elif r < 2/6:
-                    x = 2
+                    x = 1
                 elif r < 3/6:
-                    x = 3
+                    x = 2
                 elif r < 4/6:
-                    x = 4
+                    x = 3
                 elif r < 5/6:
-                    x = 5
+                    x = 4
                 else:
                     x = 6
             elif (typ == GeneT.S): # 성염색체
@@ -515,6 +515,8 @@ def ABOAnalysis(aboFactor):
             return (1, 0)
         elif (aboFactor == 3):
             return (3, 0)
+        else:
+            return (3, 1)
 
 # 아래 3개 함수는 안 건드리는게 정신건강에 이롭습니다
 # 잘 짜놨겠거니 하고 건들지마세요 제발
@@ -601,9 +603,9 @@ def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
         txtcolor = "white"
     else:
         txtcolor = "black"
-    drawShape(bot, shp, (center[0] - xs * bs, center[1] + ys * bs), bs / 2, fillcode)
-    writeTxt(bot, center, xs * bs, ys * bs, font, txtN, color=txtcolor)
-    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, color = txtcolor)
+    drawShape(bot, shp, (center[0] + xs * bs, center[1] + ys * bs), bs / 2, fillcode)
+    writeTxt(bot, center, xs * bs, ys * bs, font, txtN, scolor=txtcolor)
+    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, scolor = txtcolor)
 
 def drawTree(bot, familyGenerated, center, blocksize):
     leftN = familyGenerated[1][0]
