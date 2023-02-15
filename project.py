@@ -1,6 +1,7 @@
 import random
 import turtle
 from enum import Enum
+import copy
 
 # const
 male = True
@@ -132,7 +133,9 @@ def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.penup()
 
 def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, scolor = "black", alignoption = "center"):
-    ys = ys - ffont[1] * 2.75
+    numLine = 1 + txt.count('\n')
+    ys = ys - ffont[1] * 2.75 - ffont[1] * 1.25 * (numLine - 1)
+
     # what value shit the fuck
     turtlebot.penup()
     # color : dead code..
@@ -394,10 +397,19 @@ def familyTreeGen(args):
 
     pType = 1
     selectedG = list()
+    geneunion = dict()
+
+    # 인간의 염색체 쌍은 23쌍
+    # 상염색체 1 ~ 22, 성염색체 23
+
+
     if (pType == 1):
         selectedG.append(GeneT.ABO)
+        geneunion[GeneT.ABO] = 9
         selectedG.append(GeneT.P)
+        geneunion[GeneT.P] = 5
         selectedG.append(GeneT.S)
+        geneunion[GeneT.S] = 23
 
 
     # Gene : ABO, P, Q, R, S = (0, 1, 2, 3, 4)
@@ -416,17 +428,17 @@ def familyTreeGen(args):
             r = random.random()
             x = 0
             if (typ == GeneT.ABO): # 복대립 ABO
-                if r < 1/6:
+                if r < 1/6: ## OO
                     x = 0
-                elif r < 2/6:
+                elif r < 2/6: ## AO
                     x = 1
-                elif r < 3/6:
+                elif r < 3/6: ## AA
                     x = 2
-                elif r < 4/6:
+                elif r < 4/6: ## BO
                     x = 3
-                elif r < 5/6:
+                elif r < 5/6: ## AB
                     x = 4
-                else:
+                else:         ## BB
                     x = 6
             elif (typ == GeneT.S): # 성염색체
                 if r < 1/6:
@@ -495,10 +507,19 @@ def familyTreeGen(args):
             # 여자 : 2 이하일 때 발현 / 남자 : 3 이하일 때 발현
             fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1
 
+    problemT = list()
+    problemCode = str(1)
+    if (pType == 1):
+        problemT.append(problemCode)
+        problemT.append("\n")
+        problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ에 관한 자료이다.\n")
+        problemT.append("- ㄱ은 대립 유전자 P와 P'에 의해,\n ㄴ은 대립 유전자 Q와 Q'에 의해 결정된다.\n")
+        problemT.append("- 이 아래로 조건하고 문제가 추가될겁니다")
+
 
     # end of problem gen
 
-    return (familyT, aux, (boxtxt, intxt, fillT))
+    return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
 # familyT : Class Family | Tree of family
 # headcenterCoord : lefthigh coordinate
@@ -521,13 +542,23 @@ def ABOAnalysis(aboFactor):
 # 아래 3개 함수는 안 건드리는게 정신건강에 이롭습니다
 # 잘 짜놨겠거니 하고 건들지마세요 제발
 
-def geneHeredity(father, mother, selectedG, sex): # return by dict
+def geneHeredity(father, mother, selectedG, sex, geneunion): # return by dict
     ret = dict()
-    for typ in selectedG:
-        r = random.random()
+
+    nsl = sorted(copy.deepcopy(selectedG), key = lambda x : geneunion[x])
+
+    rec = geneunion[nsl[0]]
+    r = random.random()
+    for typ in nsl:
+        
+        if (geneunion[typ] != rec):
+            rec = geneunion[typ]
+            r = random.random()
+        
         F = father.genes[typ]
         M = mother.genes[typ]
         x = 0
+
         if (typ == GeneT.ABO): # memo : A = 1, B = 3, O = 0
             mABO = ABOAnalysis(M)
             fABO = ABOAnalysis(F)
@@ -546,7 +577,6 @@ def geneHeredity(father, mother, selectedG, sex): # return by dict
                 mF = mABO[1]
                 fF = fABO[1]
             x = mF + fF
-            
         elif (typ == GeneT.S):
             if (sex == male): # male : XY, X는 부모 염색체를 물려받음
                 if (M <= 2) : # X'X'
@@ -594,6 +624,7 @@ def geneHeredity(father, mother, selectedG, sex): # return by dict
                     x = 3
             else: # aa - aa
                 x = 3
+        
         ret[typ] = x
     return ret
 
@@ -704,9 +735,23 @@ treePart = DrawPartition((size_w - x_radius, size_ques[1] + size_tree[1] + 2 * s
 quesPart = DrawPartition((size_w - x_radius, size_w + size_ques[1] - y_radius), (size_w + size_x - x_radius, size_w - y_radius))
 
 bot = turtle.Turtle()
-writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 20, "normal"), "Hello, This is test text", "black", "left")
+
+problemTexts = ""
+
+
+
+
 
 testF = familyTreeGen(list())
+problemSentList = testF[2][3]
+
+problemTexts = ""
+
+for sent in problemSentList:
+    problemTexts = problemTexts + sent
+
+
+writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 15, "normal"), problemTexts, "black", "left")
 drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
 
 
