@@ -14,6 +14,7 @@ class GeneT(Enum):
     R = 3
     S = 4
 
+
 def ReLU(x):
     if (x >= 0):
         return x
@@ -41,6 +42,7 @@ class Person:
         self.id = numId
         self.sex = boolSex
         self.genes = dict()
+        self.ablegenes = dict()
         self.mother = None
         self.father = None
         self.spouse = None
@@ -395,12 +397,21 @@ def familyTreeGen(args):
 
     
 
-    pType = 1
+    pType = 2
     selectedG = list()
     geneunion = dict()
-
+    boxtxt = dict() #dictionary : int id -> str
+    intxt = dict() #dictionary : int id -> str
+    fillT = dict()
+    problemT = list()
+    problemCode = str(1)
     # 인간의 염색체 쌍은 23쌍
     # 상염색체 1 ~ 22, 성염색체 23
+    # boxtxt[key], intxt[key] = "Text" 로 mapping 추가 가능
+    # boxtxt : Number
+    # intxt : 내용   
+
+    ## AA Aa aA aa 1 2 3 4
 
 
     if (pType == 1):
@@ -410,90 +421,54 @@ def familyTreeGen(args):
         geneunion[GeneT.P] = 5
         selectedG.append(GeneT.S)
         geneunion[GeneT.S] = 23
+    if (pType == 2):
+        selectedG.append(GeneT.P)
+        geneunion[GeneT.P] = 1
+        selectedG.append(GeneT.Q)
+        geneunion[GeneT.Q] = 2
+        selectedG.append(GeneT.R)
+        geneunion[GeneT.R] = 1
 
 
-    # Gene : ABO, P, Q, R, S = (0, 1, 2, 3, 4)
-    # 상염색체 | {AA 1 Aa 2 aa 3}
-    
-    # ABO | {AA 2 AO 1 BB 6 BO 3 OO 0 AB 4}
-    # Consider A as 1, B as 3
 
-    # 
-    # 성염색체 | {X'X' 1 2 X'X 3 4 XX 5 6 X'Y 1 2 3 XY 4 5 6}
-
-    # Gene Phase 1 : 조부모들의 유전형을 임의로 결정한다.
-    for typ in selectedG:
-        for i in range(1, 5):
-            targetP = familyT.find(i)
-            r = random.random()
-            x = 0
-            if (typ == GeneT.ABO): # 복대립 ABO
-                if r < 1/6: ## OO
-                    x = 0
-                elif r < 2/6: ## AO
-                    x = 1
-                elif r < 3/6: ## AA
-                    x = 2
-                elif r < 4/6: ## BO
-                    x = 3
-                elif r < 5/6: ## AB
-                    x = 4
-                else:         ## BB
-                    x = 6
-            elif (typ == GeneT.S): # 성염색체
-                if r < 1/6:
-                    x = 1
-                elif r < 2/6:
-                    x = 2
-                elif r < 3/6:
-                    x = 3
-                elif r < 4/6:
-                    x = 4
-                elif r < 5/6:
-                    x = 5
-                else:
-                    x = 6
-            else: # 상염색체
-                if r < 0.3:
-                    x = 1
-                elif r < 0.8:
-                    x = 2
-                else:
-                    x = 3
+    if (pType == 2):
+        """test"""
             
-            targetP.genes[typ] = x  
+
+
+    for gno in geneunion.values():
+        for genes in [g for g, v in geneunion.items() if (v == gno)]:
+            for i in range(1, 6 + leftN + rightN):
+                P = familyT.find(i)
+                if (genes == GeneT.ABO):
+                    P.ablegenes[genes] = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+                elif (genes == GeneT.S):
+                    if (P.sex == male):
+                        P.ablegenes[genes] = set([1, 2])
+                    else:
+                        P.ablegenes[genes] = set([1, 2, 3, 4])
+                else:
+                    P.ablegenes[genes] = set([1, 2, 3, 4])
+        
+        # What to do!
+
+        # 밑에서부터 올라가면서 유전형 정하기
+        # 조건들 마구 집어넣기
+
+
+
     
-    # Gene Phase 2 : 자식들한테 유전시킨다.
-    for i in range(0, 2):
-        fatherP = familyT.find(1 + 2 * i)
-        motherP = familyT.find(2 + 2 * i)
-        for j in range(5 + leftN * i, 5 + leftN + rightN * i):
-            targetP = familyT.find(j)
-            targetP.genes = geneHeredity(fatherP, motherP, selectedG, targetP.sex)
-    fatherP = familyT.find(4 + leftN)
-    motherP = familyT.find(4 + leftN + 1)
-    targetP = familyT.find(4 + leftN + rightN + 1)
-    targetP.genes = geneHeredity(fatherP, motherP, selectedG, targetP.sex)
 
-    boxtxt = dict() #dictionary : int id -> str
-    intxt = dict() #dictionary : int id -> str
-    fillT = dict()
-    # boxtxt[key], intxt[key] = "Text" 로 mapping 추가 가능
-    # boxtxt : Number
-    # intxt : 내용
 
-    gfactor = 1 # gene factor
-    hfactor = 1 # hint factor
 
-    # intxt에 넣을거 넣으면됨
+
+
 
     for i in range(1, 4 + leftN + rightN + 2):
         targetP = familyT.find(i)
         boxtxt[i] = str(i)
 
-        if (pType == 1): #ABO, P, S
-            # In-Box : ABO, Fill : P, S 복합
-            # AA, Aa : 발현, aa : 미발현
+        if (pType == 1):
             tmp = targetP.genes[GeneT.ABO]
             if (tmp == 0):
                 intxt[i] = "O"
@@ -503,130 +478,40 @@ def familyTreeGen(args):
                 intxt[i] = "B"
             else:
                 intxt[i] = "AB"
-            
-            # 여자 : 2 이하일 때 발현 / 남자 : 3 이하일 때 발현
             fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1
+        elif (pType == 2):
+            intxt[i] = ""
 
-    problemT = list()
-    problemCode = str(1)
+    
     if (pType == 1):
         problemT.append(problemCode)
         problemT.append("\n")
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ에 관한 자료이다.\n")
         problemT.append("- ㄱ은 대립 유전자 P와 P'에 의해,\n ㄴ은 대립 유전자 Q와 Q'에 의해 결정된다.\n")
         problemT.append("- 이 아래로 조건하고 문제가 추가될겁니다")
+    elif (pType == 2):
+        problemT.append(problemCode)
+        problemT.append("\n")
+        problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
+        problemT.append("- ㄱ은 대립 유전자 P와 p에 의해,\n  ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.")
+        problemT.append("- 우상향 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n좌상향 빗금(▧)은 유전 형질 ㄴ이 발현된 사람들을 의미한다.")
+        problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.")
 
-
-    # end of problem gen
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
-# familyT : Class Family | Tree of family
-# headcenterCoord : lefthigh coordinate
-# treeSize : size of Tree
 
-def ABOAnalysis(aboFactor):
-    if (aboFactor % 2 == 0):
-        if (aboFactor == 4):
-            return (3, 1)
-        else:
-            return (aboFactor/2, aboFactor/2)
-    else:
-        if (aboFactor == 1):
-            return (1, 0)
-        elif (aboFactor == 3):
-            return (3, 0)
-        else:
-            return (3, 1)
 
-# 아래 3개 함수는 안 건드리는게 정신건강에 이롭습니다
-# 잘 짜놨겠거니 하고 건들지마세요 제발
+def avaliableFilter(familyT, conditions):
+    LF = familyT.find(1)
+    LM = familyT.find(2)
+    RF = familyT.find(3)
+    RM = familyT.find(4)
 
-def geneHeredity(father, mother, selectedG, sex, geneunion): # return by dict
-    ret = dict()
 
-    nsl = sorted(copy.deepcopy(selectedG), key = lambda x : geneunion[x])
 
-    rec = geneunion[nsl[0]]
-    r = random.random()
-    for typ in nsl:
-        
-        if (geneunion[typ] != rec):
-            rec = geneunion[typ]
-            r = random.random()
-        
-        F = father.genes[typ]
-        M = mother.genes[typ]
-        x = 0
 
-        if (typ == GeneT.ABO): # memo : A = 1, B = 3, O = 0
-            mABO = ABOAnalysis(M)
-            fABO = ABOAnalysis(F)
-            mF = -1
-            fF = -1
-            if (r < 0.25):
-                mF = mABO[0]
-                fF = fABO[0]
-            elif (r < 0.5):
-                mF = mABO[0]
-                fF = fABO[1]
-            elif (r < 0.75):
-                mF = mABO[1]
-                fF = fABO[0]
-            else:
-                mF = mABO[1]
-                fF = fABO[1]
-            x = mF + fF
-        elif (typ == GeneT.S):
-            if (sex == male): # male : XY, X는 부모 염색체를 물려받음
-                if (M <= 2) : # X'X'
-                    x = 1
-                elif (M <= 4): # X'X
-                    if (r < 0.5):
-                        x = 1
-                    else:
-                        x = 4
-                else: # XX
-                    x = 4
-            else: #female : XX. 하나의 X는 어머니, 다른 하나의 X는 아버지
-                if (M <= 2): # 어머니가 X'X'라면
-                    x = 2 #확정 X'X'
-                elif (M <= 4): # 어머니가 X'X라면
-                    if (r < 0.5):
-                        x = 2
-                    else:
-                        x = 4
-                else: #어머니가 XX라면
-                    x = 4
-                if (F >= 4):
-                    x = x + 2
-        else :
-            if (F + M == 2): # AA - AA
-                x = 1 # AA only
-            elif (F + M == 3): ## AA - Aa
-                if (r < 0.5):
-                    x = 1
-                else:
-                    x = 2
-            elif (F + M == 4 and F * M == 3): ## AA - aa
-                x = 2
-            elif (F + M == 4 and F * M == 4): ## Aa - Aa
-                if (r < 0.25):
-                    x = 1
-                elif (r < 0.5):
-                    x = 3
-                else:
-                    x = 2
-            elif (F + M == 5) : ## Aa - aa
-                if (r < 0.5):
-                    x = 2
-                else:
-                    x = 3
-            else: # aa - aa
-                x = 3
-        
-        ret[typ] = x
-    return ret
+
 
 def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
     txtcolor = ""
@@ -751,7 +636,7 @@ for sent in problemSentList:
     problemTexts = problemTexts + sent
 
 
-writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 15, "normal"), problemTexts, "black", "left")
+writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 12, "normal"), problemTexts, "black", "left")
 drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
 
 
