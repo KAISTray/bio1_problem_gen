@@ -457,6 +457,12 @@ def familyTreeGen(args):
                             if (r > 0.5):
                                 if (x == 2 or x == 3):
                                     x = 5 - x
+                        elif (gene == GeneT.S):
+                            x = "dummy"
+                        elif (gene == GeneT.ABO):
+                            x = "dummy"
+                        else:
+                            x = -1 # exception
                         
                         childP.genes[gene] = x
                     
