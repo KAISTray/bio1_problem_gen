@@ -430,31 +430,19 @@ def familyTreeGen(args):
         geneunion[GeneT.R] = 1
 
 
-
+    GC = familyT.find(5 + leftN + rightN)
+    LM = [familyT.find(i) for i in range(5, 5 + leftN)]
+    RM = [familyT.find(i) for i in range(5 + leftN, 5 + leftN + rightN)]
+    LT = [familyT.find(i) for i in range(1, 3)]
+    RT = [familyT.find(i) for i in range(3, 5)]
+    iterPersonList = [tuple(LT), tuple(RT), tuple([LM[leftN - 1], RM[rightN - 1]])]
     if (pType == 2):
-        """test"""
-            
-
-
-    for gno in geneunion.values():
-        for genes in [g for g, v in geneunion.items() if (v == gno)]:
-            for i in range(1, 6 + leftN + rightN):
-                P = familyT.find(i)
-                if (genes == GeneT.ABO):
-                    P.ablegenes[genes] = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
-                elif (genes == GeneT.S):
-                    if (P.sex == male):
-                        P.ablegenes[genes] = set([1, 2])
-                    else:
-                        P.ablegenes[genes] = set([1, 2, 3, 4])
-                else:
-                    P.ablegenes[genes] = set([1, 2, 3, 4])
-        
-        # What to do!
-
-        # 밑에서부터 올라가면서 유전형 정하기
-        # 조건들 마구 집어넣기
-
+        for gno in geneunion.values():
+            for (father, mother) in iterPersonList:
+                for gene in [genes for genes, gns in geneunion.items() if gns == gno]:
+                    if ():
+                
+                    
 
 
     
