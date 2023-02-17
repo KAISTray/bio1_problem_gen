@@ -437,11 +437,29 @@ def familyTreeGen(args):
     RT = [familyT.find(i) for i in range(3, 5)]
     iterPersonList = [tuple(LT), tuple(RT), tuple([LM[leftN - 1], RM[rightN - 1]])]
     if (pType == 2):
-        for gno in geneunion.values():
-            for (father, mother) in iterPersonList:
-                for gene in [genes for genes, gns in geneunion.items() if gns == gno]:
-                    if ():
-                
+        for (father, mother) in iterPersonList:
+            for childP in father.children:
+                for gno in geneunion.values():
+                    r = random.random()
+                    for gene in [genes for genes, gns in geneunion.items() if gns == gno]:
+                        m = mother.genes[gene]
+                        f = father.genes[gene]
+                        x = -1
+                        if (gene != GeneT.ABO and gene != GeneT.S):
+                            if (abs(r - 0.5) < 0.125): #L, L -> (L : mother -> Left, father -> right)
+                                x = (m > 2) * 2 + (f > 2) + 1
+                            elif (abs(r - 0.5) < 0.25): #L, R -> (L)
+                                x = (m > 2) * 2 + (f > 2) + 1
+                            elif (abs(r - 0.5) < 0.375): #R, L -> (R)
+                                x = (m > 2) * 2 + (f > 2) + 1
+                            else: #R, R -> (L)
+                                x = (m > 2) * 2 + (f > 2) + 1
+                            if (r > 0.5):
+                                if (x == 2 or x == 3):
+                                    x = 5 - x
+                        
+                        childP.genes[gene] = x
+                    
                     
 
 
@@ -487,14 +505,6 @@ def familyTreeGen(args):
 
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
-
-
-
-def avaliableFilter(familyT, conditions):
-    LF = familyT.find(1)
-    LM = familyT.find(2)
-    RF = familyT.find(3)
-    RM = familyT.find(4)
 
 
 
