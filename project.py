@@ -411,7 +411,10 @@ def familyTreeGen(args):
     # boxtxt : Number
     # intxt : 내용   
 
-    ## AA Aa aA aa 1 2 3 4
+    # AA Aa aA aa 1 2 3 4 GeneT.P GeneT.Q GeneT.R
+    # XX Xx xX xx 1 2 3 4 GeneT.S woman
+    # XY xY       1 2     GeneT.S man
+    # AA AB AO BA BB BO OA OB OO 1 2 3 4 5 6 7 8 9
 
 
     if (pType == 1):
@@ -430,11 +433,17 @@ def familyTreeGen(args):
         geneunion[GeneT.R] = 1
 
 
+
     GC = familyT.find(5 + leftN + rightN)
     LM = [familyT.find(i) for i in range(5, 5 + leftN)]
     RM = [familyT.find(i) for i in range(5 + leftN, 5 + leftN + rightN)]
     LT = [familyT.find(i) for i in range(1, 3)]
     RT = [familyT.find(i) for i in range(3, 5)]
+
+    
+
+
+
     iterPersonList = [tuple(LT), tuple(RT), tuple([LM[leftN - 1], RM[rightN - 1]])]
     if (pType == 2):
         for (father, mother) in iterPersonList:
@@ -458,9 +467,36 @@ def familyTreeGen(args):
                                 if (x == 2 or x == 3):
                                     x = 5 - x
                         elif (gene == GeneT.S):
-                            x = "dummy"
+                            if (childP.sex == male): #XY xY only
+                                if (r > 0.5):
+                                    x = (m <= 2) + 1
+                                else:
+                                    x = 2 - (m % 2)
+                            else: # woman
+                                if (abs(r - 0.5) > 0.25): #Father -> LeftG, Mother L -> RightG
+                                    x = ((m <= 2) + 1) + 2 * (f - 1)
+                                else:
+                                    x = ((m % 2) + 1) + 2 * (f - 1)
+                                if (r > 0.5):
+                                    if (x == 2 or x == 3):
+                                        x = 5 - x
                         elif (gene == GeneT.ABO):
-                            x = "dummy"
+                            if (abs(r - 0.5) < 0.125):
+                                f = (f + 2) // 3 # ABO 123
+                                m = (m + 2) // 3 # ABO 123
+                            elif (abs(r - 0.5) < 0.25):
+                                f = (f + 2) // 3 # ABO 123
+                                m = (m % 3) + 1 # ABO 123
+                            elif (abs(r - 0.5) < 0.375):
+                                f = (f % 3) + 1 # ABO 123
+                                m = (m + 2) // 3 # ABO 123
+                            else:
+                                f = (f % 2) + 1 # ABO 123
+                                m = (m % 3) + 1 # ABO 123
+                            if (r > 0.5):
+                                x = (f - 1) * 3 + m
+                            else:
+                                x = (m - 1) * 3 + f
                         else:
                             x = -1 # exception
                         
