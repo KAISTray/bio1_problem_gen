@@ -15,6 +15,13 @@ class GeneT(Enum):
     S = 4
 
 
+maxT = dict()
+maxT[GeneT.ABO] = 9
+maxT[GeneT.P] = 4
+maxT[GeneT.Q] = 4
+maxT[GeneT.R] = 4
+maxT[GeneT.S] = 4
+
 def ReLU(x):
     if (x >= 0):
         return x
@@ -443,9 +450,14 @@ def familyTreeGen(args):
     
 
 
-
+    initPersonList = [tuple(LT), tuple(RT)]
     iterPersonList = [tuple(LT), tuple(RT), tuple([LM[leftN - 1], RM[rightN - 1]])]
     if (pType == 2):
+        for iterC in initPersonList:
+            for iterPerson in iterC:
+                for gs in geneunion.keys:
+                    iterPerson.genes[gs] = random.randint(1, maxT[gs] - (gs == GeneT.S) * (iterPerson.sex == male) * 2)
+
         for (father, mother) in iterPersonList:
             for childP in father.children:
                 for gno in geneunion.values():
