@@ -410,6 +410,12 @@ def familyTreeGen(args):
     boxtxt = dict() #dictionary : int id -> str
     intxt = dict() #dictionary : int id -> str
     fillT = dict()
+
+    for i in range(1, 6+leftN+rightN):
+        boxtxt[i] = ""
+        intxt[i] = ""
+        fillT[i] = 0
+
     problemT = list()
     problemCode = str(1)
     # 인간의 염색체 쌍은 23쌍
@@ -455,7 +461,7 @@ def familyTreeGen(args):
     if (pType == 2):
         for iterC in initPersonList:
             for iterPerson in iterC:
-                for gs in geneunion.keys:
+                for gs in geneunion.keys():
                     iterPerson.genes[gs] = random.randint(1, maxT[gs] - (gs == GeneT.S) * (iterPerson.sex == male) * 2)
 
         for (father, mother) in iterPersonList:
@@ -553,8 +559,8 @@ def familyTreeGen(args):
         problemT.append(problemCode)
         problemT.append("\n")
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
-        problemT.append("- ㄱ은 대립 유전자 P와 p에 의해,\n  ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.")
-        problemT.append("- 우상향 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n좌상향 빗금(▧)은 유전 형질 ㄴ이 발현된 사람들을 의미한다.")
+        problemT.append("- ㄱ은 대립 유전자 P와 p에 의해, ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.\n")
+        problemT.append("- 우상향 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n좌상향 빗금(▧)은 유전 형질 ㄴ이 발현된 사람들을 의미한다.\n")
         problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.")
 
 
