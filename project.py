@@ -522,7 +522,12 @@ def familyTreeGen(args):
                     
                     
 
+    # (ExpGeneType)가 발현된 사람은 (List)이다.
 
+    # (P)의 (G1)와(과) (G2)의 DNA 상대량을 더한 값은 (x)이다.
+    # (Father)와(과) (Mother) 사이에 태어난 자식의 (ExpGeneType : ㄱㄴㄷ)에 대한 표현형이 (Child)와 같을 확률은 (Probability)이다.
+    # (G1)과 (G2)의 DNA 상대량을 더한 값이 (x)인 사람은 (y)명이다.
+    # (P1), (P2), (P3)가 가진 (G1)의 DNA상대량을 (P4), (P5), (P6)가 가진 (G2)의 DNA상대량으로 나눈 값은 (q)이다.
     
 
 
