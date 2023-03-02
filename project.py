@@ -522,19 +522,16 @@ def familyTreeGen(args):
                     
                     
 
-    # (ExpGeneType)가 발현된 사람은 (List)이다.
-
-    # (P)의 (G1)와(과) (G2)의 DNA 상대량을 더한 값은 (x)이다.
-    # (Father)와(과) (Mother) 사이에 태어난 자식의 (ExpGeneType : ㄱㄴㄷ)에 대한 표현형이 (Child)와 같을 확률은 (Probability)이다.
-    # (G1)과 (G2)의 DNA 상대량을 더한 값이 (x)인 사람은 (y)명이다.
-    # (P1), (P2), (P3)가 가진 (G1)의 DNA상대량을 (P4), (P5), (P6)가 가진 (G2)의 DNA상대량으로 나눈 값은 (q)이다.
+    # Hint 1 : (ExpGeneType)가 발현된 사람은 (List)이다.
+    # Hint 2 : (P)의 (G1)와(과) (G2)의 DNA 상대량을 더한 값은 (x)이다.
+    # Hint 3 : (Father)와(과) (Mother) 사이에 태어난 자식의 (ExpGeneType : ㄱㄴㄷ)에 대한 표현형이 (Child)와 같을 확률은 (Probability)이다.
+    # Hint 4 : (G1)과 (G2)의 DNA 상대량을 더한 값이 (x)인 사람은 (y)명이다.
+    # Hint 5 : (P1), (P2), (P3)가 가진 (G1)의 DNA상대량을 (P4), (P5), (P6)가 가진 (G2)의 DNA상대량으로 나눈 값은 (q)이다.
     
 
-
-
-
-
-
+    hintlist = list(range(1, 6))
+    random.shuffle(hintlist)
+    hintlist.pop()
     for i in range(1, 4 + leftN + rightN + 2):
         targetP = familyT.find(i)
         boxtxt[i] = str(i)
@@ -552,8 +549,6 @@ def familyTreeGen(args):
             fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1
         elif (pType == 2):
             intxt[i] = ""
-
-    
     if (pType == 1):
         problemT.append(problemCode)
         problemT.append("\n")
@@ -566,13 +561,69 @@ def familyTreeGen(args):
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
         problemT.append("- ㄱ은 대립 유전자 P와 p에 의해, ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.\n")
         problemT.append("- 우상향 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n좌상향 빗금(▧)은 유전 형질 ㄴ이 발현된 사람들을 의미한다.\n")
-        problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.")
+        problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.\n")
 
+
+    for hintType in hintlist:
+        noPerson = 5 + leftN + rightN
+        geneList = selectedG
+        if (hintType == 1):
+            targetG = random.choice(geneList)
+            extP = list()
+            if (targetG == GeneT.ABO):
+                continue
+            for p in range(1, noPerson + 1):
+                tarP = familyT.find(p)
+                if (targetG != GeneT.S or (targetG == GeneT.S and tarP.sex == female)):
+                    if tarP.genes[targetG] <= 3: #발현됨
+                        extP.append(p)
+                elif(targetG == GeneT.S and tarP.sex == male):
+                    if tarP.genes[targetG] == 1:
+                        extP.append(p)
+            geneString = ""
+            if (targetG == GeneT.P):
+                geneString = "ㄱ"
+            elif (targetG == GeneT.Q):
+                geneString = "ㄴ"
+            elif (targetG == GeneT.R):
+                geneString = "ㄷ"
+            elif (targetG == GeneT.S):
+                geneString = "ㄹ"
+            personString = ""
+            for p in extP:
+                personString = personString + str(p) + " ,"
+            totalStr = "- " + geneString + "가 발현된 사람은 " + personString + "이다."
+            problemT.append(totalStr)
+        elif (hintType == 2):
+            tarP = random.randint(1, noPerson)
+            
+
+
+            totalStr = str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다." 
+            problemT.append(totalStr)
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
 
-
+def geneStr(gene, cap):
+    if (gene == GeneT.P and cap == True):
+        return "P"
+    elif (gene == GeneT.P and cap == False):
+        return "p"
+    elif (gene == GeneT.Q and cap == True):
+        return "Q"
+    elif (gene == GeneT.Q and cap == False):
+        return "q"
+    elif (gene == GeneT.R and cap == True):
+        return "R"
+    elif (gene == GeneT.R and cap == False):
+        return "r"
+    elif (gene == GeneT.S and cap == True):
+        return "X"
+    elif (gene == GeneT.S and cap == False):
+        return "x"
+    elif (gene == GeneT.ABO):
+        return "ABO"
 
 
 
