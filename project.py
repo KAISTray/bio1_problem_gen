@@ -592,7 +592,7 @@ def familyTreeGen(args):
             personString = ""
             for p in extP:
                 personString = personString + str(p) + " ,"
-            totalStr = "- " + geneString + "가 발현된 사람은 " + personString + "이다."
+            totalStr = " - " + geneString + "가 발현된 사람은 " + personString + "이다.\n"
             problemT.append(totalStr)
         elif (hintType == 2):
             tarP = random.randint(1, noPerson)
@@ -620,7 +620,7 @@ def familyTreeGen(args):
                         sumG = sumG + (familyT.find(tarP).genes[gn] >= 4) + (familyT.find(tarP).genes[gn] >= 2)
                 cap = 2
 
-            totalStr = str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다." 
+            totalStr = str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다.\n" 
             problemT.append(totalStr)
         elif (hintType == 3):
             # 1 - 2 = 5 ~ 4 + leftN, 3 - 4 = 5 + leftN ~ 4 + leftN + rightN, 4 + leftN - 5 + leftN = 5 + leftN + rightN
@@ -692,6 +692,64 @@ def familyTreeGen(args):
 
             totalStr = " - " + str(FatherNo) + "와(과) " + str(MotherNo) + " 사이에 태어난 자식의 " + GStr + "에 대한 표현형이\n" + str(ChildNo) + "와(과) 같을 확률은 " + str(pu) + "/" + str(pd) + "이다.\n"
             problemT.append(totalStr)
+        elif (hintType == 4):
+            while(True):
+                G1 = random.choice(geneList)
+                if (G1 != GeneT.ABO):
+                    break
+            while(True):
+                G2 = random.choice(geneList)
+                if (G2 != GeneT.ABO and G2 != G1):
+                    break
+            strG1 = geneStr(G1, True)
+            strG2 = geneStr(G2, False)
+            cap = 0
+            geneiterList = list((G1, G2))
+            sumG = 0
+            isChecked = dict()
+            for gn in geneiterList:
+                for i in range(1, 6 + leftN + rightN):
+                    if (DNARelevant(familyT.find(i).genes, gn, cap, familyT.find(i).sex) == 1):
+                        if (cap == 0):
+                            isChecked[i] = True
+                        else:
+                            if (isChecked[i] == True):
+                                sumG = sumG + 1
+                    else:
+                        isChecked[i] = False
+                cap = 1
+            totalStr = " - " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값이 1인 사람은 " + str(sumG) + "명이다.\n"
+            problemT.append(totalStr)
+        elif (hintType == 5):
+            while(True):
+                G1 = random.choice(geneList)
+                if (G1 != GeneT.ABO):
+                    break
+            while(True):
+                G2 = random.choice(geneList)
+                if (G2 != GeneT.ABO and G2 != G1):
+                    break
+            strG1 = geneStr(G1, True)
+            strG2 = geneStr(G2, False)
+            cap = 0
+            geneiterList = list((G1, G2))
+            sU = 0
+            sD = 0
+
+            x = list(range(1, 6 + leftN + rightN))
+            random.shuffle(x)
+            iterP = x
+
+            for gn in geneiterList:
+                for h in range(3):
+                    i = iterP[h + 3 * cap]
+                    if (cap == 0):
+                        sU = sU + DNARelevant(familyT.find(i).genes, gn, cap, familyT.find(i).sex)
+                    else:
+                        sD = sD + DNARelevant(familyT.find(i).genes, gn, cap, familyT.find(i).sex)
+                cap = 1
+            totalStr = " - " + str(iterP[0]) + ", " + str(iterP[1]) + ", " + str(iterP[2]) + "가 가진 " + strG1 + "의 DNA 상대량을 " + str(iterP[3]) + ", " + str(iterP[4]) + ", " + str(iterP[5]) + "가 가진 " + strG2 + "의 DNA상대량으로 나눈 값은 " + str(sU) + "/" + str(sD) + "이다.\n"
+            problemT.append(totalStr)
 
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
@@ -717,6 +775,15 @@ def geneStr(gene, cap):
     elif (gene == GeneT.ABO):
         return "ABO"
 
+def DNARelevant(gs, gType, gFormal, gender = male):
+    gV = gs[gType]
+    if (gType == GeneT.ABO):
+        return ((gV - 1) // 3 == gFormal) + ((gV - 1) % 3 == gFormal)
+    elif (gType == GeneT.S):
+        if (gender == male):
+            return 1 * ((gV // 2) == gFormal)
+    else:
+        return ((gV - 1) // 2 == gFormal) + ((gV - 1) % 2 == gFormal)
 
 
 def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
