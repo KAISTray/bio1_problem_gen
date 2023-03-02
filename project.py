@@ -596,11 +596,103 @@ def familyTreeGen(args):
             problemT.append(totalStr)
         elif (hintType == 2):
             tarP = random.randint(1, noPerson)
-            
+            while(True):
+                G1 = random.choice(geneList)
+                if (G1 != GeneT.ABO):
+                    break
+            while(True):
+                G2 = random.choice(geneList)
+                if (G2 != GeneT.ABO and G2 != G1):
+                    break
+            strG1 = geneStr(G1, True)
+            strG2 = geneStr(G2, False)
 
+            geneiterList = list((G1, G2))
+            sumG = 0
+            cap = 1
+            for gn in geneiterList:
+                if (gn == GeneT.S and familyT.find(tarP).sex == male):
+                    sumG = sumG + (familyT.find(tarP).genes[gn] == cap)
+                elif (gn != GeneT.ABO):
+                    if (cap == 1):
+                        sumG = sumG + (familyT.find(tarP).genes[gn] <= 1) + (familyT.find(tarP).genes[gn] <= 3)
+                    else:
+                        sumG = sumG + (familyT.find(tarP).genes[gn] >= 4) + (familyT.find(tarP).genes[gn] >= 2)
+                cap = 2
 
             totalStr = str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다." 
             problemT.append(totalStr)
+        elif (hintType == 3):
+            # 1 - 2 = 5 ~ 4 + leftN, 3 - 4 = 5 + leftN ~ 4 + leftN + rightN, 4 + leftN - 5 + leftN = 5 + leftN + rightN
+            FatherNo = 0
+            MotherNo = 0
+            ChildNo = 0
+            rF = random.randint(1, 3)
+            if (rF == 1):
+                FatherNo = 1
+                MotherNo = 2
+                ChildNo = random.randint(5, 4 + leftN)
+            elif (rF == 2):
+                FatherNo = 3
+                MotherNo = 4
+                ChildNo = random.randint(5 + leftN, 4 + leftN + rightN)
+            else:
+                FatherNo = 4 + leftN
+                MotherNo = 5 + leftN
+                ChildNo = random.randint(5 + leftN + rightN, 5 + leftN + rightN)
+            fP = familyT.find(FatherNo)
+            mP = familyT.find(MotherNo)
+            cP = familyT.find(ChildNo)
+            EGTyp = random.choice(geneList)
+
+            GStr = geneStr(EGTyp, True)
+
+            pu = 0
+            pd = 4
+
+            if (EGTyp == GeneT.ABO):
+                fABO = list(((fP.genes[EGTyp] - 1) // 3, ((fP.genes[EGTyp] - 1) % 3)))
+                mABO = list(((mP.genes[EGTyp] - 1) // 3, ((mP.genes[EGTyp] - 1) % 3)))
+                cABO = list(((cP.genes[EGTyp] - 1) // 3, ((cP.genes[EGTyp] - 1) % 3)))
+
+                for i in range(0, 2):
+                    for j in range(0, 2):
+                        if (fABO[i] + mABO[j] == cABO[0] + cABO[1] and fABO[i] * mABO[j] == cABO[0] * cABO[1]):
+                            pu = pu + 1
+
+            elif (EGTyp == GeneT.S):
+                pd = 2
+                fS = list((fP.genes[EGTyp] // 2))
+                mS = list(((mP.genes[EGTyp] - 1) // 2, (mP.genes[EGTyp] - 1) % 2))
+                if (cP.sex == male):
+                    pu = (mS[0] == cP.genes[EGTyp] // 2) + (mS[1] == cP.genes[EGTyp] // 2)
+                else:
+                    cS = list(((cP.genes[EGTyp] - 1) // 2, (cP.genes[EGTyp] - 1) % 2))
+                    for i in range(0, 1):
+                        for j in range(0, 2):
+                            if (fS[i] + mS[j] == cS[0] + cS[1] and fS[i] * mS[j] == cS[0] * cS[1]):
+                                pu = pu + 1
+            else:
+                pd = 4
+                fABO = list(((fP.genes[EGTyp] - 1) // 2, ((fP.genes[EGTyp] - 1) % 2)))
+                mABO = list(((mP.genes[EGTyp] - 1) // 2, ((mP.genes[EGTyp] - 1) % 2)))
+                cABO = list(((cP.genes[EGTyp] - 1) // 2, ((cP.genes[EGTyp] - 1) % 2)))
+
+                for i in range(0, 2):
+                    for j in range(0, 2):
+                        if (fABO[i] + mABO[j] == cABO[0] + cABO[1] and fABO[i] * mABO[j] == cABO[0] * cABO[1]):
+                            pu = pu + 1
+            
+            while(True):
+                if (pu == 1 or pu == 3):
+                    break
+                else:
+                    pu = pu // 2
+                    pd = pd // 2
+
+            totalStr = " - " + str(FatherNo) + "와(과) " + str(MotherNo) + " 사이에 태어난 자식의 " + GStr + "에 대한 표현형이\n" + str(ChildNo) + "와(과) 같을 확률은 " + str(pu) + "/" + str(pd) + "이다.\n"
+            problemT.append(totalStr)
+
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
