@@ -141,7 +141,7 @@ def drawline(turtlebot, centerCoord, xs, ys, dir, len):
     turtlebot.forward(len)
     turtlebot.penup()
 
-def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, scolor = "black", alignoption = "center"):
+def writeTxt(turtlebot, centerCoord, xs, ys, ffont, txt, scolor, alignoption = "center"):
     numLine = 1 + txt.count('\n')
     ys = ys - ffont[1] * 2.75 - ffont[1] * 1.25 * (numLine - 1)
 
@@ -411,10 +411,7 @@ def familyTreeGen(args):
     intxt = dict() #dictionary : int id -> str
     fillT = dict()
 
-    for i in range(1, 6+leftN+rightN):
-        boxtxt[i] = ""
-        intxt[i] = ""
-        fillT[i] = 0
+    
 
     problemT = list()
     problemCode = str(1)
@@ -528,6 +525,14 @@ def familyTreeGen(args):
     # Hint 4 : (G1)과 (G2)의 DNA 상대량을 더한 값이 (x)인 사람은 (y)명이다.
     # Hint 5 : (P1), (P2), (P3)가 가진 (G1)의 DNA상대량을 (P4), (P5), (P6)가 가진 (G2)의 DNA상대량으로 나눈 값은 (q)이다.
     
+    if (pType == 1):
+        "dead code"
+    elif (pType == 2):
+        for i in range(1, 6+leftN+rightN):
+            boxtxt[i] = str(2*i)
+            intxt[i] = str(i)
+            fillT[i] = 6
+
 
     hintlist = list(range(1, 6))
     random.shuffle(hintlist)
@@ -748,9 +753,8 @@ def familyTreeGen(args):
                     else:
                         sD = sD + DNARelevant(familyT.find(i).genes, gn, cap, familyT.find(i).sex)
                 cap = 1
-            totalStr = " - " + str(iterP[0]) + ", " + str(iterP[1]) + ", " + str(iterP[2]) + "가 가진 " + strG1 + "의 DNA 상대량을 " + str(iterP[3]) + ", " + str(iterP[4]) + ", " + str(iterP[5]) + "가 가진 " + strG2 + "의 DNA상대량으로 나눈 값은 " + str(sU) + "/" + str(sD) + "이다.\n"
+            totalStr = " - " + str(iterP[0]) + ", " + str(iterP[1]) + ", " + str(iterP[2]) + "가 가진 " + strG1 + "의 DNA 상대량을\n  " + str(iterP[3]) + ", " + str(iterP[4]) + ", " + str(iterP[5]) + "가 가진 " + strG2 + "의 DNA상대량으로 나눈 값은 " + str(sU) + "/" + str(sD) + "이다.\n"
             problemT.append(totalStr)
-
 
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
@@ -793,8 +797,8 @@ def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
     else:
         txtcolor = "black"
     drawShape(bot, shp, (center[0] + xs * bs, center[1] + ys * bs), bs / 2, fillcode)
-    writeTxt(bot, center, xs * bs, ys * bs, font, txtN, scolor=txtcolor)
-    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, scolor = txtcolor)
+    writeTxt(bot, center, xs * bs, ys * bs, font, txtN, scolor = "black")
+    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, scolor = "white")
 
 def drawTree(bot, familyGenerated, center, blocksize):
     leftN = familyGenerated[1][0]
