@@ -525,14 +525,6 @@ def familyTreeGen(args):
     # Hint 4 : (G1)과 (G2)의 DNA 상대량을 더한 값이 (x)인 사람은 (y)명이다.
     # Hint 5 : (P1), (P2), (P3)가 가진 (G1)의 DNA상대량을 (P4), (P5), (P6)가 가진 (G2)의 DNA상대량으로 나눈 값은 (q)이다.
     
-    if (pType == 1):
-        "dead code"
-    elif (pType == 2):
-        for i in range(1, 6+leftN+rightN):
-            boxtxt[i] = str(2*i)
-            intxt[i] = str(i)
-            fillT[i] = 6
-
 
     hintlist = list(range(1, 6))
     random.shuffle(hintlist)
@@ -553,7 +545,19 @@ def familyTreeGen(args):
                 intxt[i] = "AB"
             fillT[i] = (targetP.genes[GeneT.P] <= 2) * 2 + (targetP.genes[GeneT.S] <= (2 + 1 * (targetP.sex == male))) * 1 + 1
         elif (pType == 2):
+            fillFactor = (targetP.genes[GeneT.Q] <= 2) * 2 + (targetP.genes[GeneT.P] <= 2)
+            if (fillFactor == 0):
+                fillT[i] = 0
+            elif (fillFactor == 1):
+                fillT[i] = 1
+            elif (fillFactor == 2):
+                fillT[i] = 7
+            else:
+                fillT[i] = 6
             intxt[i] = ""
+    
+    
+    
     if (pType == 1):
         problemT.append(problemCode)
         problemT.append("\n")
@@ -565,7 +569,7 @@ def familyTreeGen(args):
         problemT.append("\n")
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
         problemT.append("- ㄱ은 대립 유전자 P와 p에 의해, ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.\n")
-        problemT.append("- 우상향 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n좌상향 빗금(▧)은 유전 형질 ㄴ이 발현된 사람들을 의미한다.\n")
+        problemT.append("- 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n  회색 상자는 유전 형질 ㄴ이 발현된 사람들을,\n  검은 상자는 둘 다 발현된 사람들을 의미한다.\n")
         problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.\n")
 
 
@@ -625,7 +629,7 @@ def familyTreeGen(args):
                         sumG = sumG + (familyT.find(tarP).genes[gn] >= 4) + (familyT.find(tarP).genes[gn] >= 2)
                 cap = 2
 
-            totalStr = str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다.\n" 
+            totalStr = " - " + str(tarP) + "의 " + strG1 + "와(과) " + strG2 + "의 DNA 상대량을 더한 값은 " + str(sumG) + "이다.\n" 
             problemT.append(totalStr)
         elif (hintType == 3):
             # 1 - 2 = 5 ~ 4 + leftN, 3 - 4 = 5 + leftN ~ 4 + leftN + rightN, 4 + leftN - 5 + leftN = 5 + leftN + rightN
@@ -756,6 +760,7 @@ def familyTreeGen(args):
             totalStr = " - " + str(iterP[0]) + ", " + str(iterP[1]) + ", " + str(iterP[2]) + "가 가진 " + strG1 + "의 DNA 상대량을\n  " + str(iterP[3]) + ", " + str(iterP[4]) + ", " + str(iterP[5]) + "가 가진 " + strG2 + "의 DNA상대량으로 나눈 값은 " + str(sU) + "/" + str(sD) + "이다.\n"
             problemT.append(totalStr)
 
+
     return (familyT, aux, (boxtxt, intxt, fillT, problemT))
 
 
@@ -798,7 +803,7 @@ def drawS(bot, shp, center, mCenter, xs, ys, bs, fillcode, font, txtN, txtDict):
         txtcolor = "black"
     drawShape(bot, shp, (center[0] + xs * bs, center[1] + ys * bs), bs / 2, fillcode)
     writeTxt(bot, center, xs * bs, ys * bs, font, txtN, scolor = "black")
-    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, scolor = "white")
+    writeTxt(bot, mCenter, xs * bs, ys * bs, font, txtDict, scolor = txtcolor)
 
 def drawTree(bot, familyGenerated, center, blocksize):
     leftN = familyGenerated[1][0]
@@ -876,7 +881,7 @@ def drawTree(bot, familyGenerated, center, blocksize):
 
 size_x = 550                # Total x width
 size_w = 25                 # 여백
-size_desc = (size_x, 400)   # size_desc
+size_desc = (size_x, 200)   # size_desc
 size_tree = (size_x, 300)   # size_tree
 size_ques = (size_x, 100)   # size_ques
 
