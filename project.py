@@ -2,6 +2,8 @@ import random
 import turtle
 from enum import Enum
 import copy
+import os
+from PIL import Image
 
 # const
 male = True
@@ -569,8 +571,11 @@ def familyTreeGen(args):
         problemT.append("\n")
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
         problemT.append("- ㄱ은 대립 유전자 P와 p에 의해, ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.\n")
-        problemT.append("- 빗금 (▨)은 유전 형질 ㄱ이 발현된 사람을,\n  회색 상자는 유전 형질 ㄴ이 발현된 사람들을,\n  검은 상자는 둘 다 발현된 사람들을 의미한다.\n")
-        problemT.append("- ㄱ은 ㄴ과 다른 유전자에 있으며, ㄷ과는 같은 유전자에 존재한다.\n")
+        problemT.append("- P는 Q과 다른 염색체에 있으며, R과는 같은 염색체에 존재한다.\n")
+        problemT.append(" ■ / ● (검정) : 유전 형질 ㄱ, ㄴ 발현 남자/여자\n")
+        problemT.append(" 빗금(▨) : 유전 형질 ㄱ 발현 남자 / 여자\n")
+        problemT.append(" ■ / ● (회색) : 유전 형질 ㄴ 발현 남자 / 여자\n")
+        problemT.append(" □ / ○ (흰색) : 정상 남자 / 여자\n")
 
 
     for hintType in hintlist:
@@ -877,6 +882,8 @@ def drawTree(bot, familyGenerated, center, blocksize):
         gShape = "circle"
     drawS(bot, gShape, center, mCenter, 0, -2, blocksize, fillc[5 + leftN + rightN], font, txtno[5 + leftN + rightN], txtdict[5 + leftN + rightN])
 
+    bot.hideturtle()
+
 
 
 size_x = 550                # Total x width
@@ -921,8 +928,10 @@ for sent in problemSentList:
 writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 12, "normal"), problemTexts, "black", "left")
 drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
 
-
-
+cv = turtle.getcanvas()
+cv.postscript(file="gen_problem.ps", colormode = 'color')
+psimage=Image.open('gen_problem.ps')
+psimage.save('gen_problem.png')
 
 input("press any key to exit..")
 

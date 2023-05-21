@@ -1,0 +1,5 @@
+cmd 폴더 이동(이 폴더로)
+
+pip install pyinstaller (없으면)
+
+pyinstaller (실행파일).py -F
