@@ -3,7 +3,7 @@ import turtle
 from enum import Enum
 import copy
 import os
-from PIL import Image
+import sys
 
 # const
 male = True
@@ -253,6 +253,21 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             ys = -d
             
             drawline(turtlebot, center, xs, ys, 90, 2 * d)
+    elif (opt == 8 and shapeType == "circle"):
+        for i in range(0, 15, 2):
+            h = (i - 7) * radius / 8
+            d = ((radius**2) - (h**2))**0.5
+            xs = -d
+            ys = h
+
+            drawline(turtlebot, center, xs, ys, 0, 2 * d)
+        for i in range(0, 15, 2):
+            h = (i - 7) * radius / 8
+            d = ((radius**2) - (h**2))**0.5
+            xs = h
+            ys = -d
+            
+            drawline(turtlebot, center, xs, ys, 90, 2 * d)
 
     elif (opt == 1 and shapeType == "square"):
         for i in range(0, 15, 2):
@@ -290,6 +305,20 @@ def drawShape(turtlebot, shapeType = "circle", center = (0, 0), radius = 1, opt 
             drawline(turtlebot, center, xs, ys, 0, d)
 
     elif (opt == 5 and shapeType == "square"):
+        for i in range(0, 15, 2):
+            h = (i - 7) * radius / 16
+            d = radius
+            xs = h
+            ys = -radius / 2
+            drawline(turtlebot, center, xs, ys, 90, d)
+
+    elif (opt == 8 and shapeType == "square"):
+        for i in range(0, 15, 2):
+            h = (i - 7) * radius / 16
+            d = radius
+            xs = -radius / 2
+            ys = h
+            drawline(turtlebot, center, xs, ys, 0, d)
         for i in range(0, 15, 2):
             h = (i - 7) * radius / 16
             d = radius
@@ -553,7 +582,7 @@ def familyTreeGen(args):
             elif (fillFactor == 1):
                 fillT[i] = 1
             elif (fillFactor == 2):
-                fillT[i] = 7
+                fillT[i] = 8
             else:
                 fillT[i] = 6
             intxt[i] = ""
@@ -570,12 +599,35 @@ def familyTreeGen(args):
         problemT.append(problemCode)
         problemT.append("\n")
         problemT.append("다음은 어떤 집안의 유전 형질 ㄱ, ㄴ, ㄷ에 관한 자료이다.\n")
-        problemT.append("- ㄱ은 대립 유전자 P와 p에 의해, ㄴ은 대립 유전자 Q와 q에 의해,\n   ㄷ은 대립 유전자 R과 r에 의해 결정된다.\n")
-        problemT.append("- P는 Q과 다른 염색체에 있으며, R과는 같은 염색체에 존재한다.\n")
-        problemT.append(" ■ / ● (검정) : 유전 형질 ㄱ, ㄴ 발현 남자/여자\n")
-        problemT.append(" 빗금(▨) : 유전 형질 ㄱ 발현 남자 / 여자\n")
-        problemT.append(" ■ / ● (회색) : 유전 형질 ㄴ 발현 남자 / 여자\n")
-        problemT.append(" □ / ○ (흰색) : 정상 남자 / 여자\n")
+        problemT.append("아래 정보들을 바탕으로 모든 유전자형을 결정하시오.\n")
+        problemT.append("- ㄱ은 대립 유전자 A와 a에 의해, ㄴ은 대립 유전자 B와 b에 의해,\n   ㄷ은 대립 유전자 D과 d에 의해 결정된다.\n")
+        problemT.append("- A는 B과 다른 염색체에 있으며, C와는 같은 염색체에 존재한다.\n")
+        problemT.append(" ■ (검정) : 유전 형질 ㄱ, ㄴ 발현 남자 / 여자\n")
+        problemT.append(" ▦ (격자) : 유전 형질 ㄱ 발현 남자 / 여자\n")
+        problemT.append(" ■ (회색) : 유전 형질 ㄴ 발현 남자 / 여자\n")
+        problemT.append(" □ (흰색) : 정상 남자 / 여자\n")
+        print("[Answer]")
+        for pindex in range(1, 6 + leftN + rightN):
+            p = familyT.find(pindex)
+            if (p.genes[GeneT.P] == 1):
+                pgstr = "AA"
+            elif (p.genes[GeneT.P] == 4):
+                pgstr = "aa"
+            else:
+                pgstr = "Aa"
+            if (p.genes[GeneT.Q] == 1):
+                qgstr = "BB"
+            elif (p.genes[GeneT.Q] == 4):
+                qgstr = "bb"
+            else:
+                qgstr = "Bb"
+            if (p.genes[GeneT.R] == 1):
+                rgstr = "DD"
+            elif (p.genes[GeneT.R] == 4):
+                rgstr = "dd"
+            else:
+                rgstr = "Dd"
+            print(str(pindex) + " : " + pgstr + " " + qgstr + " " + rgstr)
 
 
     for hintType in hintlist:
@@ -771,17 +823,17 @@ def familyTreeGen(args):
 
 def geneStr(gene, cap):
     if (gene == GeneT.P and cap == True):
-        return "P"
+        return "A"
     elif (gene == GeneT.P and cap == False):
-        return "p"
+        return "a"
     elif (gene == GeneT.Q and cap == True):
-        return "Q"
+        return "B"
     elif (gene == GeneT.Q and cap == False):
-        return "q"
+        return "b"
     elif (gene == GeneT.R and cap == True):
-        return "R"
+        return "D"
     elif (gene == GeneT.R and cap == False):
-        return "r"
+        return "d"
     elif (gene == GeneT.S and cap == True):
         return "X"
     elif (gene == GeneT.S and cap == False):
@@ -894,7 +946,7 @@ size_ques = (size_x, 100)   # size_ques
 
 
 # automatic calculated
-size_page = (size_x + 2 * size_w, size_desc[1] + size_tree[1] + size_ques[1] + 4 * size_w)
+size_page = (size_x + 2 * size_w, size_desc[1] + size_tree[1] + size_ques[1] + 6 * size_w)
 
 # turtle setup
 turtle.setup(size_page[0], size_page[1])
@@ -927,11 +979,6 @@ for sent in problemSentList:
 
 writeTxt(bot, (descPart.left, descPart.head), 0, 0, ("Arial", 12, "normal"), problemTexts, "black", "left")
 drawTree(bot, testF, (treePart.centerAlign(0, 0, 300, 150)), 30)
-
-cv = turtle.getcanvas()
-cv.postscript(file="gen_problem.ps", colormode = 'color')
-psimage=Image.open('gen_problem.ps')
-psimage.save('gen_problem.png')
 
 input("press any key to exit..")
 
